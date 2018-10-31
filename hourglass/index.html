@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3/dist/tf.min.js"> </script>
+
+    <!-- Place your code in the script tag below. You can also use an external .js file -->
+    <script>
+      tf.loadModel('https://longern.github.io/hourglass/model.json')
+        .then((model) => {
+          window.model = model;
+        });
+    </script>
+  </head>
+
+  <body>
+  </body>
+</html>
