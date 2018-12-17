@@ -1,6 +1,3 @@
----
-title: Longern
----
 ## Projects
 
 [Mini Machine Learning](/mini-ml)
