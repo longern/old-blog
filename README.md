@@ -1,3 +1,8 @@
-## Mini Machine Learning
+## Projects
 
-[Link](/mini-ml)
+[Mini Machine Learning](/mini-ml)
+
+## Sitemap
+[About](/about)
+
+## Links
