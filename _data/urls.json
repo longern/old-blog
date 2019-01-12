@@ -2,11 +2,11 @@
   {
     "text": "Home",
     "url": "/",
-    "icon": "fa-home",
+    "icon": "fa-home"
   },
   {
     "text": "About",
-    "url": "/about/",
+    "url": "/about",
     "icon": "fa-comments"
   },
   {
