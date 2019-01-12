@@ -10,6 +10,11 @@
     "icon": "fa-comments"
   },
   {
+    "text": "Demos",
+    "url": "/mini-ml",
+    "icon": "fa-link"
+  },
+  {
     "text": "Github",
     "url": "https://github.com/longern/",
     "icon": "fa-github",
