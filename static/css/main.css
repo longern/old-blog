@@ -176,6 +176,9 @@ footer {
 .pager li.active a {
     background: rgba(89, 148, 129, 0.3);
 }
+.PageNavigation {
+    overflow: hidden;
+}
 /** Search input **/
 .searchcontrol {
     margin-top: 35px;
