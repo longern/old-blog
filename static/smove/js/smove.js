@@ -377,7 +377,7 @@ window.onresize = function () {
     if (scale < 1)
         canvas.style.zoom = scale;
     else
-        center.style.zoom = "";
+        canvas.style.zoom = "";
 }
 
 document.onkeydown = function (event) {
