@@ -384,15 +384,19 @@ document.onkeydown = function (event) {
     switch (event.which) {
         case 37: // left
             requestWhiteDotMove(smove.states.whiteDot.x - 1, smove.states.whiteDot.y);
+            event.preventDefault();
             break;
         case 38: // up
             requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y + 1);
+            event.preventDefault();
             break;
         case 39: // right
             requestWhiteDotMove(smove.states.whiteDot.x + 1, smove.states.whiteDot.y);
+            event.preventDefault();
             break;
         case 40: // down
             requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y - 1);
+            event.preventDefault();
             break;
     }
 };
