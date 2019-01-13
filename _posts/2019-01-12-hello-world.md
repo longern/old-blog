@@ -6,6 +6,6 @@ x = y
 y = temp
 ```
 
-Theme: https://github.com/codeasashu/hcz-jekyll-blog
+Theme: [HCZ Material theme](https://github.com/codeasashu/hcz-jekyll-blog)
 
 Rendering formulas such as $e^{i\pi}+1=0$ is WIP.
