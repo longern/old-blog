@@ -371,13 +371,13 @@ window.addEventListener("load", function () {
 });
 
 window.onresize = function () {
-    var body = document.getElementsByTagName("body")[0];
+    var canvas = document.getElementById("smove");
     var center = document.getElementById("center");
-    var scale = Math.min(body.clientWidth / center.clientWidth, body.clientHeight / center.clientHeight);
+    var scale = center.clientWidth / canvas.width;
     if (scale < 1)
-        center.style.transform = "scale(" + scale + ", " + scale + ")";
+        canvas.style.zoom = scale;
     else
-        center.style.transform = "";
+        center.style.zoom = "";
 }
 
 document.onkeydown = function (event) {
