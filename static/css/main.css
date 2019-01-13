@@ -150,6 +150,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', e
 .navbar-toggle i {
     color: #BCCCBF;
 }
+.list-group-item-heading {
+    font-weight: bold;
+}
 .menu .list-group-item-heading, .menu .list-group-item-text{
     color:#fff!important;
 }
