@@ -8,4 +8,4 @@ title: Smove - A Tiny HTML5 Game
     <canvas id="smove" width="800" height="600"></canvas>
 </div>
 <p>Use arrow keys to stay alive and collect points.</p>
-<p><a href="http://www.simplemachine.co/game/smove/" target="_blank">http://www.simplemachine.co/game/smove/</a></p>
+<p><a href="https://www.simplemachine.co/game/smove/" target="_blank">Game designed by Simple Machine</a></p>
