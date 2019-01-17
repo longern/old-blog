@@ -8,6 +8,4 @@ logo: https://avatars1.githubusercontent.com/u/860892
 include:
   - _nuxt
 
-allowsearch: true
-
 paginate: 6
