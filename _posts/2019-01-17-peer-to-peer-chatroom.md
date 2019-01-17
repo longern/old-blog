@@ -23,7 +23,10 @@ This is a simple chatroom based on PeerJS. Share this link: <a id="p2p-chatroom-
     }
     return false
   }
-  var peer = new Peer()
+  var peer = new Peer({
+    port: 443,
+    secure: true
+  })
   var conn = null
   peer.on('open', function(id) {
     var idElement = document.getElementById('p2p-chatroom-id')
