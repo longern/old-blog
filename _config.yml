@@ -4,8 +4,11 @@ remote_theme: codeasashu/hcz-jekyll-blog
 title: "Longern"
 author: Longern
 logo: https://avatars1.githubusercontent.com/u/860892
+github: https://github.com/longern
 
 include:
   - _nuxt
+
+disqus_shortname: longern
 
 paginate: 6
