@@ -3,7 +3,7 @@ title: Encrypted Blog Using CryptoJS
 ---
 <form onsubmit="return cryptoSubmit()">
   <label>Password:</label>
-  <input type="text" id="crypto-key" class="form-control">
+  <input type="text" autocomplete="off" id="crypto-key" class="form-control">
   <input type="submit" hidden>
 </form>
 <div id="decrypted-content"></div>
