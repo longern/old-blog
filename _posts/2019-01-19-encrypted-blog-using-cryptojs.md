@@ -1,3 +1,6 @@
+---
+title: Encrypted Blog Using CryptoJS
+---
 <form onsubmit="return cryptoSubmit()">
   <label>Password:</label>
   <input type="text" id="crypto-key" class="form-control">
