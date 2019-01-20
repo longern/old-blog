@@ -26,3 +26,22 @@ function cryptoSubmit() {
   return false
 }
 </script>
+## Tutorial
+Import CryptoJS.
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+```
+Convert your content into ciphertext in console.
+DO NOT commit or it will leak from git history.
+```js
+CryptoJS.AES.encrypt('Hello world', 'key').toString()
+```
+Save the ciphertext.
+```js
+var ciphertext = 'U2FsdGVkX19ZS8PPl0RE2pIZYe6oz4+mdwJvuzC3idc='
+```
+Decrypt ciphertext with the key from input and convert to string.
+```js
+var bytes = CryptoJS.AES.decrypt(ciphertext, key)
+var text = bytes.toString(CryptoJS.enc.Utf8)
+```
