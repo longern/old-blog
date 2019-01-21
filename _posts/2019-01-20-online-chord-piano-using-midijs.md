@@ -8,6 +8,10 @@ MIDI.loadPlugin({
 })
 var lastRootNote = null
 window.onkeydown = function(event) {
+  if (event.repeat) {
+    return
+  }
+  
   var which = event.keyCode || event.which
   if (which >= 49 && which <= 55) {
     var rootNote = [60, 62, 64, 65, 67, 57, 59][which - 49]
