@@ -10,13 +10,13 @@ var lastRootNote = null
 window.onkeydown = function(event) {
   var which = event.keyCode || event.which
   if (which >= 49 && which <= 55) {
-    var rootNote = [57, 59, 61, 62, 64, 66, 68][which - 49]
+    var rootNote = [60, 62, 64, 65, 67, 57, 59][which - 49]
     if (event.shiftKey) {
       rootNote -= 12
     }
 
     var minor = false
-    if ([11, 1, 6].indexOf(rootNote % 12) !== -1) {
+    if ([2, 4, 9].indexOf(rootNote % 12) !== -1) {
       minor = true;
     }
     var notes = [rootNote, rootNote + (minor ? 3 : 4), rootNote + 7]
