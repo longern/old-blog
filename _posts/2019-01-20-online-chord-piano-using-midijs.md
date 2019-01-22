@@ -13,8 +13,9 @@ window.onkeydown = function(event) {
   }
   
   var which = event.keyCode || event.which
+  var shift = parseInt(document.getElementById('shift').innerText)
   if (which >= 49 && which <= 55) {
-    var rootNote = [60, 62, 64, 65, 67, 57, 59][which - 49]
+    var rootNote = [60, 62, 64, 65, 67, 57, 59][which - 49] + shift
     if (event.shiftKey) {
       rootNote -= 12
     }
@@ -31,5 +32,17 @@ window.onkeydown = function(event) {
     MIDI.chordOn(0, notes, 127, 0)
   }
 }
+
+function pitchShift(n) {
+  var shift = parseInt(document.getElementById('shift').innerText) + n
+  shift = Math.max(Math.min(shift, 12), -12)
+  document.getElementById('shift').innerText = shift
+}
 </script>
+Pitch shift: <span id="shift" style="display: inline-block; width: 3em">0</span>
+<span class="btn-group" role="group">
+  <button type="button" class="btn btn-default" onclick="pitchShift(1)">+</button>
+  <button type="button" class="btn btn-default" onclick="pitchShift(-1)">-</button>
+</span>
+
 Press 1~7 to play!
