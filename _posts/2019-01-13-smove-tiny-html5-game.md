@@ -1,5 +1,7 @@
 ---
 title: Smove - A Tiny HTML5 Game
+categories:
+  - demo
 ---
 <link rel="stylesheet" href="/static/smove/css/smove.css" />
 <script type="text/javascript" src="/static/smove/js/animation.js"></script>

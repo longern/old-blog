@@ -1,5 +1,7 @@
 ---
 title: Encrypted Blog Using CryptoJS
+categories:
+  - demo
 ---
 <form onsubmit="return cryptoSubmit()">
   <label>Password:</label>

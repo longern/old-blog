@@ -1,5 +1,9 @@
 ---
 title: Simple BPM Counter
+categories:
+  - demo
+tags:
+  - music
 ---
 <script>
 (function() {

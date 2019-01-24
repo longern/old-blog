@@ -1,3 +1,10 @@
+---
+title: Pitch Detector
+categories:
+  - demo
+tags:
+  - music
+---
 <script>
 function autoCorrelate( buf, sampleRate ) {
 	// Implements the ACF2+ algorithm

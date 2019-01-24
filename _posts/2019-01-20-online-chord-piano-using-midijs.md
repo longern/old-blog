@@ -1,5 +1,9 @@
 ---
 title: Online Chord Piano Using MIDI.js
+categories:
+  - demo
+tags:
+  - music
 ---
 <script src="https://cdn.jsdelivr.net/npm/midi.js@0.3.1/lib/midi.min.js"></script>
 <script>

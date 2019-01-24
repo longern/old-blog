@@ -1,5 +1,7 @@
 ---
 title: Peer to Peer Chatroom
+categories:
+  - demo
 ---
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.16/peer.min.js"></script>
 ### Introduction
