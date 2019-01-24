@@ -22,7 +22,7 @@ window.onkeydown = function(event) {
 
     var minor = false
     if ([2, 4, 9].indexOf(rootNote % 12) !== -1) {
-      minor = true;
+      minor = true
     }
     var notes = [rootNote, rootNote + (minor ? 3 : 4), rootNote + 7]
     if (lastRootNote !== rootNote) {
