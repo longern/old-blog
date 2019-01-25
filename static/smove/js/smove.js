@@ -367,7 +367,37 @@ window.addEventListener("load", function () {
     setTimeout(gameTimeout, 15);
 
     // Rotate food
-    Animation({ endValue: 2 * Math.PI, duration: 5000, callback: ret => smove.isPlaying() && (smove.display.foodRotate = ret), forever: true })
+    Animation({ endValue: 2 * Math.PI, duration: 5000, callback: ret => smove.isPlaying() && (smove.display.foodRotate = ret), forever: true });
+
+    document.getElementById("smove").addEventListener("touchstart", function(event) {
+        touchPoint = {
+            x: event.touches[0].clientX,
+            y: event.touches[0].clientY,
+        };
+        event.preventDefault();
+    });
+    
+    document.getElementById("smove").addEventListener("touchmove", function(event) {
+        if (!touchPoint)
+            return;
+    
+        var xDiff = event.changedTouches[0].clientX - touchPoint.x;
+        var yDiff = event.changedTouches[0].clientY - touchPoint.y;
+        if (Math.max(Math.abs(xDiff), Math.abs(yDiff)) >= 4) { // Minimal swipe distanse
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (xDiff < 0) // left
+                    requestWhiteDotMove(smove.states.whiteDot.x - 1, smove.states.whiteDot.y);
+                else // right
+                    requestWhiteDotMove(smove.states.whiteDot.x + 1, smove.states.whiteDot.y);
+            } else {
+                if (yDiff < 0) // up
+                    requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y + 1);
+                else // down
+                    requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y - 1);
+            }
+            touchPoint = null;
+        }
+    });
 });
 
 window.onresize = function () {
@@ -402,34 +432,5 @@ document.onkeydown = function (event) {
 };
 
 var touchPoint = null;
-
-window.addEventListener("touchstart", function(event) {
-    touchPoint = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY,
-    }
-});
-
-window.addEventListener("touchmove", function(event) {
-    if (!touchPoint)
-        return;
-
-    var xDiff = event.changedTouches[0].clientX - touchPoint.x;
-    var yDiff = event.changedTouches[0].clientY - touchPoint.y;
-    if (Math.max(Math.abs(xDiff), Math.abs(yDiff)) >= 4) { // Minimal swipe distanse
-        if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            if (xDiff < 0) // left
-                requestWhiteDotMove(smove.states.whiteDot.x - 1, smove.states.whiteDot.y);
-            else // right
-                requestWhiteDotMove(smove.states.whiteDot.x + 1, smove.states.whiteDot.y);
-        } else {
-            if (yDiff < 0) // up
-                requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y + 1);
-            else // down
-                requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y - 1);
-        }
-        touchPoint = null;
-    }
-});
 
 smove = new Smove();
