@@ -33,6 +33,6 @@ function makeQRCode(data, imgId) {
   var qr = qrcode(0, 'M');
   qr.addData(data);
   qr.make();
-  document.getElementById(imgId).src = qr.createImgTag();
+  document.getElementById(imgId).src = qr.createImgTag(4);
 }
 ```
