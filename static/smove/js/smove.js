@@ -1,23 +1,45 @@
-﻿Smove = function () {
+﻿function loadImage(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.addEventListener("load", () => resolve(img));
+        img.addEventListener("error", reject);
+        img.src = url;
+    });
+}
+
+Smove = function () {
     var smove = new Object();
 
-    smove.resource = {
-        image: {
-            black: new Image(),
-            board: new Image(),
-            food: new Image(),
-            levelfood: new Image(),
-            white: new Image(),
-        },
-    };
+    Promise.all([
+        loadImage("/static/smove/image/black.svg"),
+        loadImage("/static/smove/image/board.svg"),
+        loadImage("/static/smove/image/food.svg"),
+        loadImage("/static/smove/image/levelfood.svg"),
+        loadImage("/static/smove/image/white.svg"),
+    ])
+        .then(([black, board, food, levelfood, white]) => {
+            smove.resource = {
+                image: {
+                    black,
+                    board,
+                    food,
+                    levelfood,
+                    white,
+                },
+            };
+
+            // Prerender images;
+            for (let img in smove.resource.image)
+                smove.resource.image[img] = prerender(smove.resource.image[img]);
+        
+            // Start rendering
+            setTimeout(gameTimeout, 15);
+        
+            // Rotate food
+            Animation({ endValue: 2 * Math.PI, duration: 5000, callback: ret => smove.isPlaying() && (smove.display.foodRotate = ret), forever: true });
+        })
 
     smove.bestScore = 0;
-
-    smove.resource.image.black.src = "/static/smove/image/black.svg";
-    smove.resource.image.board.src = "/static/smove/image/board.svg";
-    smove.resource.image.food.src = "/static/smove/image/food.svg";
-    smove.resource.image.levelfood.src = "/static/smove/image/levelfood.svg";
-    smove.resource.image.white.src = "/static/smove/image/white.svg";
 
     smove.levelData = [
         {
@@ -351,55 +373,6 @@ function requestWhiteDotMove(x, y) {
     smove.states.whiteDot.motive = true;
 }
 
-window.addEventListener("load", function () {
-    // Adapt to window
-    window.onresize();
-
-    // Load best score
-    if (typeof (window.localStorage) === "object" && window.localStorage.getItem("SmoveBestScore"))
-        smove.bestScore = Number(window.localStorage.getItem("SmoveBestScore"))
-
-    // Prerender images;
-    for (let img in smove.resource.image)
-        smove.resource.image[img] = prerender(smove.resource.image[img]);
-
-    // Start rendering
-    setTimeout(gameTimeout, 15);
-
-    // Rotate food
-    Animation({ endValue: 2 * Math.PI, duration: 5000, callback: ret => smove.isPlaying() && (smove.display.foodRotate = ret), forever: true });
-
-    document.getElementById("smove").addEventListener("touchstart", function(event) {
-        touchPoint = {
-            x: event.touches[0].clientX,
-            y: event.touches[0].clientY,
-        };
-        event.preventDefault();
-    });
-    
-    document.getElementById("smove").addEventListener("touchmove", function(event) {
-        if (!touchPoint)
-            return;
-    
-        var xDiff = event.changedTouches[0].clientX - touchPoint.x;
-        var yDiff = event.changedTouches[0].clientY - touchPoint.y;
-        if (Math.max(Math.abs(xDiff), Math.abs(yDiff)) >= 4) { // Minimal swipe distanse
-            if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                if (xDiff < 0) // left
-                    requestWhiteDotMove(smove.states.whiteDot.x - 1, smove.states.whiteDot.y);
-                else // right
-                    requestWhiteDotMove(smove.states.whiteDot.x + 1, smove.states.whiteDot.y);
-            } else {
-                if (yDiff < 0) // up
-                    requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y + 1);
-                else // down
-                    requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y - 1);
-            }
-            touchPoint = null;
-        }
-    });
-});
-
 window.onresize = function () {
     var canvas = document.getElementById("smove");
     var center = document.getElementById("center");
@@ -433,4 +406,41 @@ document.onkeydown = function (event) {
 
 var touchPoint = null;
 
+document.getElementById("smove").addEventListener("touchstart", function(event) {
+    touchPoint = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+    };
+    event.preventDefault();
+});
+
+document.getElementById("smove").addEventListener("touchmove", function(event) {
+    if (!touchPoint)
+        return;
+
+    var xDiff = event.changedTouches[0].clientX - touchPoint.x;
+    var yDiff = event.changedTouches[0].clientY - touchPoint.y;
+    if (Math.max(Math.abs(xDiff), Math.abs(yDiff)) >= 4) { // Minimal swipe distanse
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            if (xDiff < 0) // left
+                requestWhiteDotMove(smove.states.whiteDot.x - 1, smove.states.whiteDot.y);
+            else // right
+                requestWhiteDotMove(smove.states.whiteDot.x + 1, smove.states.whiteDot.y);
+        } else {
+            if (yDiff < 0) // up
+                requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y + 1);
+            else // down
+                requestWhiteDotMove(smove.states.whiteDot.x, smove.states.whiteDot.y - 1);
+        }
+        touchPoint = null;
+    }
+});
+
 smove = new Smove();
+
+// Adapt to window
+window.onresize();
+
+// Load best score
+if (typeof (window.localStorage) === "object" && window.localStorage.getItem("SmoveBestScore"))
+    smove.bestScore = Number(window.localStorage.getItem("SmoveBestScore"))
