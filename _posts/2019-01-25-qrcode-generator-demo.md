@@ -35,4 +35,5 @@ function makeQRCode(data, imgId) {
   qr.make();
   document.getElementById(imgId).src = qr.createImgTag(4);
 }
+</script>
 ```
