@@ -10,5 +10,6 @@ include:
   - _nuxt
 
 disqus_shortname: longern
+google_analytics: UA-133314683-1
 
 paginate: 6
