@@ -45,16 +45,22 @@ function matchupCalculate(winrates) {
     var decks2 = Array.apply(null, {length: winrates.length}).map(Number.call, Number)
     var winorder1 = ''
     var winorder2 = ''
-    while (decks1.length && decks2.length) {
-      var deck1 = decks1[Math.floor(Math.random() * decks1.length)]
-      var deck2 = decks2[Math.floor(Math.random() * decks2.length)]
+    var deck1 = decks1[Math.floor(Math.random() * decks1.length)]
+    var deck2 = decks2[Math.floor(Math.random() * decks2.length)]
+    while(true) {
       winrate = winrates[deck1][deck2]
       if (Math.random() < winrate) {
         decks1 = decks1.filter(x => x !== deck1)
         winorder1 += deck1 + 1
+        if (!decks1.length)
+          break
+        deck1 = decks1[Math.floor(Math.random() * decks1.length)]
       } else {
         decks2 = decks2.filter(x => x !== deck2)
         winorder2 += deck2 + 1
+        if (!decks2.length)
+          break
+        deck2 = decks2[Math.floor(Math.random() * decks2.length)]
       }
     }
     if (!decks1.length) {
