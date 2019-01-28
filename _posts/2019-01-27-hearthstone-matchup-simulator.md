@@ -3,6 +3,7 @@ title: Hearthstone Matchup Simulator
 categories:
   - demo
 ---
+Bo3 and Bo5 are supported.
 <table class="table table-striped" id="winrate-table">
   <tr>
     <th></th>
