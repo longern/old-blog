@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Material Design for Bootstrap CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+
+    <title>Python Editor</title>
+
+    <style>
+      body {
+        background: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/codemirror.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/python/python.min.js"></script>
+    <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
+
+    <div class="container-fluid position-fixed h-100">
+      <div class="row h-100" id="row-code">
+        <div class="col-12 pl-0 pr-0">
+          <span class="bmd-form-group h-100">
+            <textarea class="form-control" id="code" name="code"></textarea>
+          </span>
+        </div>
+      </div>
+      <div class="row position-absolute w-100" style="left: 0; bottom: 0">
+        <button type="submit" class="btn btn-primary mb-0" id="run">运行</button>
+      </div>
+    </div>
+    <!-- Button trigger modal -->
+
+    <style>
+      .CodeMirror {
+        font-family: Consolas, monospace;
+        font-size: 16px;
+        height: 100%;
+      }
+
+      .CodeMirror-scroll {
+        cursor: text;
+      }
+
+      #run {
+        width: 100%;
+        display: none;
+      }
+    </style>
+    
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        mode: 'text/x-python',
+        matchBrackets: true
+      })
+      editor.setOption("extraKeys", {  
+        Tab: function(cm) {
+          var spaces = Array(cm.getOption("indentUnit") + 1).join(" ")
+          cm.replaceSelection(spaces)
+        }
+      })
+
+      if (window.require) {
+        $('#run').show()
+        $('#row-code').css('padding-bottom', '35px')
+      }
+
+      $('#run').click(function() {
+        const child_process = require('child_process')
+        const p = child_process.exec(
+          'python',
+          {},
+          (err, stdout, stderr) => {
+            alert(stdout)
+          }
+        )
+        p.stdin.write(editor.doc.getValue())
+        p.stdin.end()
+      })
+    </script>
+  </body>
+</html><!DOCTYPE html>
+<html>
