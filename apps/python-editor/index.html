@@ -44,7 +44,7 @@
     <style>
       .CodeMirror {
         font-family: Consolas, monospace;
-        font-size: 16px;
+        font-size: 14px;
         height: 100%;
       }
 
@@ -88,6 +88,10 @@
         p.stdin.write(editor.doc.getValue())
         p.stdin.end()
       })
+
+      if (window.setTitlebar) {
+        window.setTitlebar({})
+      }
     </script>
   </body>
 </html><!DOCTYPE html>
