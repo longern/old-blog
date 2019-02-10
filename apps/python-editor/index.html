@@ -27,15 +27,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/python/python.min.js"></script>
     <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
 
-    <div class="container-fluid position-fixed h-100">
-      <div class="row h-100" id="row-code">
-        <div class="col-12 pl-0 pr-0">
-          <span class="bmd-form-group h-100">
-            <textarea class="form-control" id="code" name="code"></textarea>
-          </span>
-        </div>
+    <div class="w-100 h-100">
+      <div class="h-100" id="row-code">
+        <span class="bmd-form-group">
+          <textarea class="form-control" id="code" name="code"></textarea>
+        </span>
       </div>
-      <div class="row position-absolute w-100" style="left: 0; bottom: 0">
+      <div class="position-absolute w-100" style="left: 0; bottom: 0">
         <button type="submit" class="btn btn-primary mb-0" id="run">运行</button>
       </div>
     </div>
@@ -75,8 +73,8 @@
         $('#run').show()
         $('#row-code').css('padding-bottom', '35px')
 
-        const customTitlebar = require('custom-electron-titlebar');
-        new customTitlebar.Titlebar({});
+        const customTitlebar = require('custom-electron-titlebar')
+        new customTitlebar.Titlebar({})
       }
 
       $('#run').click(function() {
