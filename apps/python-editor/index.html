@@ -74,6 +74,9 @@
       if (window.require) {
         $('#run').show()
         $('#row-code').css('padding-bottom', '35px')
+
+        const customTitlebar = require('custom-electron-titlebar');
+        new customTitlebar.Titlebar({});
       }
 
       $('#run').click(function() {
@@ -88,10 +91,6 @@
         p.stdin.write(editor.doc.getValue())
         p.stdin.end()
       })
-
-      if (window.setTitlebar) {
-        window.setTitlebar({})
-      }
     </script>
   </body>
 </html><!DOCTYPE html>
