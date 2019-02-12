@@ -1,2 +1,9 @@
 CACHE MANIFEST
-*
+editor.js
+https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css
+https://code.jquery.com/jquery-3.2.1.slim.min.js
+https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js
+https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js
+https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/codemirror.css
+https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/codemirror.js
+https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/python/python.min.js
