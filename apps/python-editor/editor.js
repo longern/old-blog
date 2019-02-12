@@ -94,6 +94,12 @@
             }
           }
         ]
+      },
+      {
+        label: '&Help',
+        submenu: [
+          { label: 'Update', role: 'forcereload' }
+        ]
       }
     ])
 
