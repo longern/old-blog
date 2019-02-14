@@ -45,6 +45,15 @@
         label: '&File',
         submenu: [
           {
+            label: 'New',
+            accelerator: 'Ctrl+N',
+            click() {
+              storage.currentFilePath = null
+              updateStorage()
+              editor.doc.setValue('')
+            }
+          },
+          {
             label: 'Open...',
             accelerator: 'Ctrl+O',
             click() {
