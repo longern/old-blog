@@ -3,9 +3,11 @@
     localStorage.setItem('PythonEditorStorage', JSON.stringify(storage))
     if (storage.currentFilePath) {
       document.title = storage.currentFilePath.replace(/.*(\/|\\)/, '') + ' - Python Editor'
-      if (titlebar) {
-        titlebar.updateTitle()
-      }
+    } else {
+      document.title = 'Python Editor'
+    }
+    if (titlebar) {
+      titlebar.updateTitle()
     }
   }
 
