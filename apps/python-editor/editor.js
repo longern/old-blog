@@ -1,6 +1,22 @@
 (function() {
+  function updateStorage() {
+    localStorage.setItem('PythonEditorStorage', JSON.stringify(storage))
+    if (storage.currentFilePath) {
+      document.title = storage.currentFilePath.replace(/.*(\/|\\)/, '') + ' - Python Editor'
+      if (titlebar) {
+        titlebar.updateTitle()
+      }
+    }
+  }
+
+  var titlebar = null
+  var storage = JSON.parse(localStorage.getItem('PythonEditorStorage') || '{}')
+  storage.currentFilePath = storage.currentFilePath || null
+  // updateStorage()
+
   function openFile(filepath) {
-    currentFilePath = filepath
+    storage.currentFilePath = filepath
+    updateStorage()
     const fs = require('fs')
     const dataBuffer = fs.readFileSync(filepath)
     editor.doc.setValue(dataBuffer.toString())
@@ -11,7 +27,6 @@
     mode: 'text/x-python',
     matchBrackets: true
   })
-  var currentFilePath = null
 
   editor.setOption("extraKeys", {  
     Tab: function(cm) {
@@ -21,6 +36,10 @@
   })
 
   if (window.require) {
+    if (storage.currentFilePath) {
+      openFile(storage.currentFilePath)
+    }
+
     window.setApplicationMenu([
       {
         label: '&File',
@@ -40,13 +59,14 @@
             label: 'Save',
             accelerator: 'Ctrl+S',
             click() {
-              if (!currentFilePath) {
+              if (!storage.currentFilePath) {
                 const { dialog } = require('electron').remote
-                currentFilePath = dialog.showSaveDialog()
+                storage.currentFilePath = dialog.showSaveDialog()
               }
-              if (currentFilePath) {
+              if (storage.currentFilePath) {
+                updateStorage()
                 const fs = require('fs')
-                fs.writeFileSync(currentFilePath, editor.doc.getValue())
+                fs.writeFileSync(storage.currentFilePath, editor.doc.getValue())
               }
             }
           },
@@ -57,9 +77,10 @@
               const { dialog } = require('electron').remote
               const savePath = dialog.showSaveDialog()
               if (savePath) {
-                currentFilePath = savePath
+                storage.currentFilePath = savePath
+                updateStorage()
                 const fs = require('fs')
-                fs.writeFileSync(currentFilePath, editor.doc.getValue())
+                fs.writeFileSync(storage.currentFilePath, editor.doc.getValue())
               }
             }
           },
@@ -108,6 +129,6 @@
     ])
 
     const customTitlebar = require('custom-electron-titlebar')
-    new customTitlebar.Titlebar({})
+    titlebar = new customTitlebar.Titlebar({})
   }
 })()
