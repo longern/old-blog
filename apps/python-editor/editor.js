@@ -42,6 +42,11 @@
       openFile(storage.currentFilePath)
     }
 
+    document.body.addEventListener('drop', (ev) => {
+      openFile(ev.dataTransfer.files[0].path)
+      ev.preventDefault()
+    }, true)
+
     window.setApplicationMenu([
       {
         label: '&File',
