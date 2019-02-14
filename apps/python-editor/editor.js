@@ -1,4 +1,11 @@
 (function() {
+  function openFile(filepath) {
+    currentFilePath = filepath
+    const fs = require('fs')
+    const dataBuffer = fs.readFileSync(filepath)
+    editor.doc.setValue(dataBuffer.toString())
+  }
+
   var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
     mode: 'text/x-python',
@@ -25,10 +32,7 @@
               const { dialog } = require('electron').remote
               const files = dialog.showOpenDialog()
               if (files) {
-                currentFilePath = files[0]
-                const fs = require('fs')
-                const dataBuffer = fs.readFileSync(currentFilePath)
-                editor.doc.setValue(dataBuffer.toString())
+                openFile(files[0])
               }
             }
           },
