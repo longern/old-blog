@@ -1,10 +1,10 @@
 (function() {
   function updateStorage() {
-    localStorage.setItem('PythonEditorStorage', JSON.stringify(storage))
+    localStorage.setItem('NaiveEditorStorage', JSON.stringify(storage))
     if (storage.currentFilePath) {
-      document.title = storage.currentFilePath.replace(/.*(\/|\\)/, '') + ' - Python Editor'
+      document.title = storage.currentFilePath.replace(/.*(\/|\\)/, '') + ' - Naive Editor'
     } else {
-      document.title = 'Python Editor'
+      document.title = 'Naive Editor'
     }
     if (titlebar) {
       titlebar.updateTitle()
@@ -12,7 +12,7 @@
   }
 
   var titlebar = null
-  var storage = JSON.parse(localStorage.getItem('PythonEditorStorage') || '{}')
+  var storage = JSON.parse(localStorage.getItem('NaiveEditorStorage') || '{}')
   storage.currentFilePath = storage.currentFilePath || null
   storage.recentFiles = storage.recentFiles || []
   updateStorage()
