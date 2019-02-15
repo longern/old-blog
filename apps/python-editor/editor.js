@@ -29,11 +29,20 @@
     const fs = require('fs')
     const dataBuffer = fs.readFileSync(filepath)
     editor.doc.setValue(dataBuffer.toString())
+
+    var ext;
+    if (ext = /.+\.([^.]+)$/.exec(filepath)) {
+      var info = CodeMirror.findModeByExtension(ext[1]);
+      if (info) {
+        editor.setOption("mode", info.mime);
+        CodeMirror.autoLoadMode(editor, info.mode);
+      }
+    }
   }
 
+  CodeMirror.modeURL = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/%N/%N.js";
   var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
-    mode: 'text/x-python',
     matchBrackets: true
   })
 
