@@ -14,10 +14,17 @@
   var titlebar = null
   var storage = JSON.parse(localStorage.getItem('PythonEditorStorage') || '{}')
   storage.currentFilePath = storage.currentFilePath || null
-  // updateStorage()
+  storage.recentFiles = storage.recentFiles || []
+  updateStorage()
 
   function openFile(filepath) {
     storage.currentFilePath = filepath
+    if (storage.recentFiles.indexOf(filepath) === -1) {
+      storage.recentFiles.push(filepath)
+    }
+    if (storage.recentFiles.length >= 10) {
+      storage.recentFiles.length = 10
+    }
     updateStorage()
     const fs = require('fs')
     const dataBuffer = fs.readFileSync(filepath)
@@ -43,8 +50,8 @@
     }
 
     document.body.addEventListener('drop', (ev) => {
-      openFile(ev.dataTransfer.files[0].path)
       ev.preventDefault()
+      openFile(ev.dataTransfer.files[0].path)
     }, true)
 
     window.setApplicationMenu([
@@ -70,6 +77,15 @@
                 openFile(files[0])
               }
             }
+          },
+          {
+            label: 'Open recent file',
+            submenu: storage.recentFiles.map(file => ({
+              label: file,
+              click() {
+                openFile(file)
+              }
+            }))
           },
           {
             label: 'Save',
