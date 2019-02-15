@@ -128,7 +128,14 @@
           { type: 'separator' },
           { role: 'cut', accelerator: 'Ctrl+X' },
           { role: 'copy', accelerator: 'Ctrl+C' },
-          { role: 'paste', accelerator: 'Ctrl+V' }
+          { role: 'paste', accelerator: 'Ctrl+V' },
+          { type: 'separator' },
+          {
+            label: 'Insert date',
+            click() {
+              editor.doc.replaceSelection(new Date().toUTCString())
+            }
+          }
         ]
       },
       {
