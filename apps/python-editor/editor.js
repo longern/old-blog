@@ -18,6 +18,14 @@
   updateStorage()
 
   function openFile(filepath) {
+    if (!fs.existsSync(filepath)) {
+      if (storage.currentFilePath === filepath) {
+        storage.currentFilePath = null
+        updateStorage()
+      }
+      return
+    }
+
     storage.currentFilePath = filepath
     if (storage.recentFiles.indexOf(filepath) === -1) {
       storage.recentFiles.push(filepath)
