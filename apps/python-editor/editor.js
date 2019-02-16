@@ -66,7 +66,7 @@
       window.registerFileExtension(ext)
     }
 
-    if (argv) {
+    if (window.argv) {
       storage.currentFilePath = argv
     }
 
