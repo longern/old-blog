@@ -9,6 +9,6 @@ https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/codemirror.js
 https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/meta.min.js
 https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/addon/mode/loadmode.min.js
 
-FALLBACK:
+NETWORK:
 index.html
 editor.js
