@@ -18,6 +18,7 @@
   updateStorage()
 
   function openFile(filepath) {
+    const fs = require('fs')
     if (!fs.existsSync(filepath)) {
       if (storage.currentFilePath === filepath) {
         storage.currentFilePath = null
@@ -34,7 +35,6 @@
       storage.recentFiles.length = 10
     }
     updateStorage()
-    const fs = require('fs')
     const dataBuffer = fs.readFileSync(filepath)
     editor.doc.setValue(dataBuffer.toString())
 
