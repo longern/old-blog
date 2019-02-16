@@ -62,6 +62,14 @@
   })
 
   if (window.require) {
+    for (var ext of ['html', 'js', 'py', 'txt']) {
+      window.registerFileExtension(ext)
+    }
+
+    if (argv) {
+      storage.currentFilePath = argv
+    }
+
     if (storage.currentFilePath) {
       openFile(storage.currentFilePath)
     }
