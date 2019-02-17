@@ -32,12 +32,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/addon/mode/loadmode.min.js"></script>
     <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
 
-    <div class="w-100 h-100">
-      <div class="h-100" id="row-code">
+    <div class="w-100 h-100 d-flex">
+      <div id="editor-box" class="h-100" id="row-code" style="width: 100%">
         <span class="bmd-form-group">
           <textarea class="form-control" id="code" name="code"></textarea>
         </span>
       </div>
+      <div id="markdown-display" class="p-2" style="display: none; flex: 1; overflow: auto;"></div>
     </div>
 
     <style>

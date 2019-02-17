@@ -17,26 +17,44 @@
   storage.recentFiles = storage.recentFiles || []
   updateStorage()
 
-  function openFile(filepath) {
-    const fs = require('fs')
-    if (!fs.existsSync(filepath)) {
-      if (storage.currentFilePath === filepath) {
-        storage.currentFilePath = null
-        updateStorage()
-      }
-      return
-    }
+  var markdownRenderer = null
 
+  function renderMarkdown() {
+    if (!markdownRenderer && window.markdownit) {
+      markdownRenderer = markdownit({
+        html: true,
+        linkify: true
+      })
+    }
+    if (markdownRenderer) {
+      $('#markdown-display').html(markdownRenderer.render(editor.doc.getValue()))
+    }
+  }
+
+  function openFile(filepath) {
+    if (filepath) {
+      const fs = require('fs')
+      if (!fs.existsSync(filepath)) {
+        if (storage.currentFilePath === filepath) {
+          storage.currentFilePath = null
+          updateStorage()
+        }
+        return
+      }
+
+      if (storage.recentFiles.indexOf(filepath) === -1) {
+        storage.recentFiles.push(filepath)
+      }
+      if (storage.recentFiles.length >= 10) {
+        storage.recentFiles.length = 10
+      }
+      const dataBuffer = fs.readFileSync(filepath)
+      editor.doc.setValue(dataBuffer.toString())
+    } else {
+      editor.doc.setValue('')
+    }
     storage.currentFilePath = filepath
-    if (storage.recentFiles.indexOf(filepath) === -1) {
-      storage.recentFiles.push(filepath)
-    }
-    if (storage.recentFiles.length >= 10) {
-      storage.recentFiles.length = 10
-    }
     updateStorage()
-    const dataBuffer = fs.readFileSync(filepath)
-    editor.doc.setValue(dataBuffer.toString())
 
     var ext;
     if (ext = /.+\.([^.]+)$/.exec(filepath)) {
@@ -45,6 +63,23 @@
         editor.setOption("mode", info.mime);
         CodeMirror.autoLoadMode(editor, info.mode);
       }
+    }
+
+    if (ext && ext[1] === 'md') {
+      if (!window.markdownit) {
+        var scriptElement = document.createElement('script')
+        scriptElement.src = "https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js"
+        scriptElement.addEventListener('load', renderMarkdown)
+        document.head.appendChild(scriptElement)
+      }
+      $('#editor-box').css('width', '50%')
+      $('#markdown-display').show()
+      renderMarkdown()
+      editor.on('change', renderMarkdown)
+    } else {
+      $('#editor-box').css('width', '100%')
+      $('#markdown-display').hide()
+      editor.off('change', renderMarkdown)
     }
   }
 
@@ -87,9 +122,7 @@
             label: 'New',
             accelerator: 'Ctrl+N',
             click() {
-              storage.currentFilePath = null
-              updateStorage()
-              editor.doc.setValue('')
+              openFile(null)
             }
           },
           {
