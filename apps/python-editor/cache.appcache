@@ -1,7 +1,8 @@
 CACHE MANIFEST
 # Fri, 15 Feb 2019 03:51:15 GMT
 https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css
-https://code.jquery.com/jquery-3.2.1.slim.min.js
+https://code.jquery.com/jquery-3.3.1.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.5/jquery.i18n.min.js
 https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js
 https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.min.js
 https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/codemirror.min.css

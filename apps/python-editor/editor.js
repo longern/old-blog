@@ -85,6 +85,16 @@
     editor.focus()
   }
 
+  $.i18n().load({
+    'zh-CN': 'i18n/zh-CN.json'
+  })
+    .then(function() {
+      storage.i18nMessages = $.i18n().messageStore.messages
+      updateStorage()
+    })
+
+  $.i18n().load(storage.i18nMessages)
+
   CodeMirror.modeURL = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/%N/%N.js";
   var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
@@ -118,17 +128,17 @@
 
     window.setApplicationMenu([
       {
-        label: '&File',
+        label: $.i18n('&File'),
         submenu: [
           {
-            label: 'New',
+            label: $.i18n('New'),
             accelerator: 'Ctrl+N',
             click() {
               openFile(null)
             }
           },
           {
-            label: 'Open...',
+            label: $.i18n('Open...'),
             accelerator: 'Ctrl+O',
             click() {
               const { dialog } = require('electron').remote
@@ -139,7 +149,7 @@
             }
           },
           {
-            label: 'Open recent file',
+            label: $.i18n('Open Recent File'),
             submenu: storage.recentFiles.map(file => ({
               label: file,
               click() {
@@ -148,7 +158,7 @@
             }))
           },
           {
-            label: 'Save',
+            label: $.i18n('Save'),
             accelerator: 'Ctrl+S',
             click() {
               if (!storage.currentFilePath) {
@@ -164,7 +174,7 @@
             }
           },
           {
-            label: 'Save As...',
+            label: $.i18n('Save As...'),
             accelerator: 'Ctrl+Shift+S',
             click() {
               const { dialog } = require('electron').remote
@@ -178,11 +188,11 @@
             }
           },
           { type: 'separator' },
-          { label: 'Exit', role: 'close', accelerator: 'Alt+F4' },
+          { label: $.i18n('Exit'), role: 'close', accelerator: 'Alt+F4' },
         ]
       },
       {
-        label: '&Edit',
+        label: $.i18n('&Edit'),
         submenu: [
           { role: 'undo', accelerator: 'Ctrl+Z' },
           { role: 'redo', accelerator: 'Ctrl+Y' },
@@ -192,7 +202,7 @@
           { role: 'paste', accelerator: 'Ctrl+V' },
           { type: 'separator' },
           {
-            label: 'Insert date',
+            label: $.i18n('Insert Date'),
             click() {
               editor.doc.replaceSelection(new Date().toUTCString())
               editor.focus()
@@ -201,10 +211,10 @@
         ]
       },
       {
-        label: '&Debug',
+        label: $.i18n('&Debug'),
         submenu: [
           {
-            label: 'Run',
+            label: $.i18n('Run'),
             accelerator: 'Ctrl+F5',
             click() {
               const child_process = require('child_process')
@@ -222,9 +232,9 @@
         ]
       },
       {
-        label: '&Help',
+        label: $.i18n('&Help'),
         submenu: [
-          { label: 'Update', role: 'forcereload' }
+          { label: $.i18n('Update'), role: 'forcereload' }
         ]
       }
     ])
