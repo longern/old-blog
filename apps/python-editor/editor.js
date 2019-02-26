@@ -82,7 +82,7 @@
       editor.off('change', renderMarkdown)
     }
 
-    editor.cm.focus()
+    editor.focus()
   }
 
   CodeMirror.modeURL = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/%N/%N.js";
@@ -160,7 +160,7 @@
                 const fs = require('fs')
                 fs.writeFileSync(storage.currentFilePath, editor.doc.getValue())
               }
-              editor.cm.focus()
+              editor.focus()
             }
           },
           {
@@ -195,7 +195,7 @@
             label: 'Insert date',
             click() {
               editor.doc.replaceSelection(new Date().toUTCString())
-              editor.cm.focus()
+              editor.focus()
             }
           }
         ]
