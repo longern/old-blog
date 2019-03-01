@@ -8,7 +8,7 @@ s, del, s *, del * {
 s:hover, del:hover, s>*:hover, del>*:hover {
   color: #333;
 }
-s, s>* {  
+s, del, s>*, del>* {  
   background-color: rgba(0, 0, 0, 0); !important;
 }
 </style>
