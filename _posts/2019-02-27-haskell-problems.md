@@ -161,7 +161,7 @@ instance Num a => Group (Vector2DSum a) where
 
 证明 `(<>) = (++)` 是唯一一种将 `[a]` 实现为 `Semigroup` 类型类实例的方法。
 
-用 `const` 和 `<*>` 定义 `(.)` 函数。
+用 `const` 和 `<*>` 定义 `(.)` 函数。  
 ~~`const (<*>) <*> const`~~
 
 ### Problems
