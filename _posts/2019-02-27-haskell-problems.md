@@ -1,11 +1,11 @@
 Haskell 期末复习题
 ===
 <style>
-s, s * {
+s, del, s *, del * {
   color: rgba(0, 0, 0, 0);
   text-decoration: none;
 }
-s:hover, s>*:hover {
+s:hover, del:hover, s>*:hover, del>*:hover {
   color: #333;
 }
 s, s>* {  
@@ -22,22 +22,22 @@ on f g x y = f (g x) (g y)
 ```
 
 ### Type
-写出 `Bool` 类型的定义。
+写出 `Bool` 类型的定义。  
 ~~`data Bool = False | True`~~
 
-写出 `1.2` 的类型。
+写出 `1.2` 的类型。  
 ~~`Fractional p => p`~~
 
-写出 `flip` 的类型。
+写出 `flip` 的类型。  
 ~~`(a -> b -> c) -> b -> a -> c`~~
 
-写出 `uncurry (:)` 的类型。
+写出 `uncurry (:)` 的类型。  
 ~~`(a, [a]) -> [a]`~~
 
-写出 `id <*> const True` 的类型。
+写出 `id <*> const True` 的类型。  
 ~~`(Bool -> a) -> a`~~
 
-写出一个 `Student` 类型的定义，含有 `stu_name :: String` 和 `stu_id :: Integer` 两个字段，且能使用 `show` 函数转换为字符串。
+写出一个 `Student` 类型的定义，含有 `stu_name :: String` 和 `stu_id :: Integer` 两个字段，且能使用 `show` 函数转换为字符串。  
 ~~`data Student = Student {stu_name :: String, stu_id :: Integer} deriving (Show)`~~
 
 下列类型限定合法的是
@@ -49,19 +49,19 @@ on f g x y = f (g x) (g y)
 ~~BD~~
 
 ### List
-写出表达式 `['a', 'b'] /= "ab"` 的值。
+写出表达式 `['a', 'b'] /= "ab"` 的值。  
 ~~`False`~~
 
-写出表达式 `length ['z'..'a']` 的值。
+写出表达式 `length ['z'..'a']` 的值。  
 ~~`0`~~
 
-写出表达式 `length ([0,10..89] :: [Double]) == length ([0,10..88] :: [Int])` 的值。
+写出表达式 `length ([0,10..89] :: [Double]) == length ([0,10..88] :: [Int])` 的值。  
 ~~`False`~~
 
-写出 `\n -> foldr (++) [] (map pure [1..n])` 的时间复杂度。
+写出 `\n -> foldr (++) [] (map pure [1..n])` 的时间复杂度。  
 ~~O(n)~~
 
-写出 `\n -> foldl (++) [] (map pure [1..n])` 的时间复杂度。
+写出 `\n -> foldl (++) [] (map pure [1..n])` 的时间复杂度。  
 ~~O(n^2)~~
 
 ### Functor and Applicative
@@ -92,7 +92,7 @@ instance Monad (->) r where
 ```
 </s>
 
-写出 `\l m -> [x + y | x <- l, y <- m]` 去语法糖的结果（用 `>>=` 表示）。
+写出 `\l m -> [x + y | x <- l, y <- m]` 去语法糖的结果（用 `>>=` 表示）。  
 ~~`\l m -> l >>= \x -> m >>= \y -> return $ x + y`~~
 
 写出函数 `addPrefix` 的实现（不使用 `do`），使得输出满足要求。
@@ -104,10 +104,10 @@ instance Monad (->) r where
 ~~`addPrefix p = return . (p ++)`~~
 
 ### Foldable
-写出表达式 `length $ foldMap (flip replicate [1]) [1..4]` 的值。
+写出表达式 `length $ foldMap (flip replicate [1]) [1..4]` 的值。  
 ~~`10`~~
 
-用 `foldr` 定义 `foldMap` 函数。
+用 `foldr` 定义 `foldMap` 函数。  
 ~~`foldMap f = foldr (mappend . f) mempty`~~
 
 ### Typeclass
