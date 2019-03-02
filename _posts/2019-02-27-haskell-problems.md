@@ -1,19 +1,7 @@
 Haskell 期末复习题
 ===
-<style>
-s, del, s *, del * {
-  color: rgba(0, 0, 0, 0);
-  text-decoration: none;
-}
-s:hover, del:hover, s>*:hover, del>*:hover {
-  color: #333;
-}
-s, del, s>*, del>* {  
-  background-color: rgba(0, 0, 0, 0); !important;
-}
-</style>
 ### 函数参考
-```
+```haskell
 join :: Monad m => m (m a) -> m a
 join = (>>= id)
 
@@ -73,7 +61,7 @@ fib = 1 : 1 : (______________) fib
 ~~`zipWith (+) <*> tail`~~
 
 将 `Monoid a => ((,) a)` 实现为 `Functor` 和 `Applicative` 类型类实例。
-<s>
+<p class="spoiler-next-node"></p>
 ```
 instance Functor ((,) a) where
     fmap f (x, y) = (x, f y)
@@ -81,16 +69,14 @@ instance Monoid a => Applicative ((,) a) where
     pure y = (mempty, y)
     (x1, f) <*> (x2, y) = (x1 `mappend` x2, f y)
 ```
-</s>
 
 ### Monad
 将 `(->) r` 实现为 `Monad` 类型类实例（仅需写出 `>>=` 的定义）。
-<s>
+<p class="spoiler-next-node"></p>
 ```
 instance Monad (->) r where
     f >>= k = \ r -> k (f r) r
 ```
-</s>
 
 写出 `\l m -> [x + y | x <- l, y <- m]` 去语法糖的结果（用 `>>=` 表示）。  
 ~~`\l m -> l >>= \x -> m >>= \y -> return $ x + y`~~
@@ -112,16 +98,14 @@ instance Monad (->) r where
 
 ### Typeclass
 实现一个 `Group` 类型类，要求接受一个 `Monoid` 类型作为类型参数，所有实例必须实现 `inverse` 函数返回逆元。
-<s>
-```
+```haskell
 class Monoid a => Group a where
     inverse :: a -> a
 ```
-</s>
 
 将 Num a => (a, a) 与二维向量的加法运算 Vector2DSum 实现为 Semigroup, Monoid 和 Group 的实例。
-<s>
-```
+<p class="spoiler-next-node"></p>
+```haskell
 newtype Vector2DSum a = Vector2DSum { getVector2DSum :: (a, a) }
     deriving (Eq, Ord, Show)
 instance Num a => Semigroup (Vector2DSum a) where
@@ -131,7 +115,6 @@ instance Num a => Monoid (Vector2DSum a) where
 instance Num a => Group (Vector2DSum a) where
     inverse (Vector2DSum (x, y)) = Vector2DSum (-x, -y)
 ```
-</s>
 
 ### Evaluation
 下列说法正确的是
@@ -140,7 +123,7 @@ instance Num a => Group (Vector2DSum a) where
 * C. `const 3 getLine` 中，输入不会实际发生
 * D. `getLine >>= (const $ putStrLn "hello")` 中，输入不会实际发生
 
-~~AC~~
+<del>AC</del>
 
 下列表达式会引发错误的是
 * A. `const True undefined`
@@ -148,7 +131,7 @@ instance Num a => Group (Vector2DSum a) where
 * C. `const False $! [undefined]`
 * D. `null $! const [undefined] False`
 
-~~B~~
+<del>B</del>
 
 ### Function Laws
 下列等式不恒成立的是
@@ -157,7 +140,7 @@ instance Num a => Group (Vector2DSum a) where
 * C. `join . return :: (Monad m) => m a -> m a = id :: (Monad m) => m a -> m a`
 * D. `return . join :: (Monad m) => m (m a) -> m (m a) = id :: (Monad m) => m (m a) -> m (m a)`
 
-~~D~~
+<del>D</del>
 
 证明 `(<>) = (++)` 是唯一一种将 `[a]` 实现为 `Semigroup` 类型类实例的方法。
 
@@ -166,7 +149,7 @@ instance Num a => Group (Vector2DSum a) where
 
 ### Problems
 实现 `fastRepeatOp`，使得其功能与 `repeatOp` 相同，时间复杂度为 $\log(n)$。
-```
+```haskell
 import Data.Monoid
 
 repeatOp :: (Monoid a, Integral b) => a -> b -> a
@@ -180,9 +163,29 @@ repeatOp x n = x `mappend` repeatOp x (n - 1)
 ```
 
 实现 36 以内任意进制转换
-```
+```haskell
 convertBase :: [Int] -> Int -> Int -> [Int]
 
 > convertBase [1, 10] 16 10
 [2, 6]
 ```
+<style>
+.spoiler {
+  display: inline-block;
+  min-width: 3em;
+  text-decoration: none;
+  background: #333 !important;
+}
+.spoiler, .spoiler * {
+  color: rgba(0, 0, 0, 0) !important;
+}
+.spoiler:hover, .spoiler:hover * {
+  color: #eee !important;
+}
+.spoiler * {
+  background: rgba(0, 0, 0, 0) !important;
+}
+</style>
+<script>
+document.querySelectorAll('s, del, .spoiler-next-node + *').forEach(node => { node.classList.add('spoiler') })
+</script>
