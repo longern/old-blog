@@ -69,14 +69,14 @@
         $('#loginForm').hide()
         $('#logoutForm').show()
 
-        const onlineUser = response.body.split(',')[0]
+        storage.onlineUser = response.body.split(',')[0]
         onlineTimestamp = +response.body.split(',')[1]
         currentTimestamp = +response.body.split(',')[2]
         storage.usage = +response.body.split(',')[6]
         storage.usageLastUpdate = Date.now()
         queryTimestamp = Date.now()
 
-        $('#onlineUserText').text(onlineUser)
+        $('#onlineUserText').text(storage.onlineUser)
         $('#stateText').text('Online')
         $('#durationText').text(`${currentTimestamp - onlineTimestamp} seconds ago`)
       }
@@ -140,6 +140,9 @@
     queryUsage()
     queryIPAddress()
     $('#autorun').val(remote.app.getLoginItemSettings().openAtLogin)
+    if (storage.onlineUser) {
+      $('#usernameInput').val(storage.onlineUser)
+    }
   }
 
   window.setInterval(function() {
