@@ -71,13 +71,13 @@
       $('#stateText').text('Online')
       $('#durationText').text(`${currentTimestamp - onlineTimestamp} seconds ago`)
 
-      const usagePercentage = usage / (25 * 1073741824) * 100
+      const usagePercentage = usage / (25 * 1000000000) * 100
       $('#usageProgress').css('width', usagePercentage + '%')
 
       if (usage > 1073741824) {
-        $('#usageProgress').text((usage / 1073741824).toFixed(2) + ' GB')
+        $('#usageProgress').text((usage / 1000000000).toFixed(2) + ' GB')
       } else {
-        $('#usageProgress').text((usage / 1048576).toFixed(2) + ' MB')
+        $('#usageProgress').text((usage / 1000000).toFixed(2) + ' MB')
       }
 
       return true
