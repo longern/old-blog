@@ -117,6 +117,13 @@
     remote = require('electron').remote
     request = require('request')
 
+    if (!request) {
+      installPackage(['request'], function() {
+        location.reload()
+      })
+      return
+    }
+
     queryUsage()
     queryIPAddress()
     $('#autorun').val(remote.app.getLoginItemSettings().openAtLogin)
