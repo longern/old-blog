@@ -1,5 +1,11 @@
 (function() {
 
+  function updateStorage() {
+    localStorage.setItem('TUNetStorage', JSON.stringify(storage))
+  }
+
+  var storage = JSON.parse(localStorage.getItem('TUNetStorage') || '{}')
+
   var remote = null
   var request = null
 
@@ -45,7 +51,7 @@
   function queryUsage() {
     request.get('http://net.tsinghua.edu.cn/rad_user_info.php', {}, function(err, response) {
       if (err) {
-        return false
+        return
       }
       
       if (!response.body) {
@@ -55,39 +61,43 @@
         $('#usageProgress').text('? MB')
 
         queryTimestamp = null
-        return false
+
+        if (new Date(storage.usageLastUpdate).getMonth() !== new Date().getMonth()) {
+          storage.usage = 0
+        }
+      } else {
+        $('#loginForm').hide()
+        $('#logoutForm').show()
+
+        const onlineUser = response.body.split(',')[0]
+        onlineTimestamp = +response.body.split(',')[1]
+        currentTimestamp = +response.body.split(',')[2]
+        storage.usage = +response.body.split(',')[6]
+        storage.usageLastUpdate = Date.now()
+        queryTimestamp = Date.now()
+
+        $('#onlineUserText').text(onlineUser)
+        $('#stateText').text('Online')
+        $('#durationText').text(`${currentTimestamp - onlineTimestamp} seconds ago`)
       }
 
-      $('#loginForm').hide()
-      $('#logoutForm').show()
-
-      const onlineUser = response.body.split(',')[0]
-      onlineTimestamp = +response.body.split(',')[1]
-      currentTimestamp = +response.body.split(',')[2]
-      const usage = +response.body.split(',')[6]
-      queryTimestamp = Date.now()
-
-      $('#onlineUserText').text(onlineUser)
-      $('#stateText').text('Online')
-      $('#durationText').text(`${currentTimestamp - onlineTimestamp} seconds ago`)
-
-      const usagePercentage = usage / (25 * 1000000000) * 100
+      const usagePercentage = storage.usage / (25 * 1000000000) * 100
       $('#usageProgress').css('width', usagePercentage + '%')
 
-      if (usage > 1073741824) {
-        $('#usageProgress').text((usage / 1000000000).toFixed(2) + ' GB')
+      if (storage.usage > 1073741824) {
+        $('#usageProgress').text((storage.usage / 1000000000).toFixed(2) + ' GB')
       } else {
-        $('#usageProgress').text((usage / 1000000).toFixed(2) + ' MB')
+        $('#usageProgress').text((storage.usage / 1000000).toFixed(2) + ' MB')
       }
 
-      return true
+      updateStorage()
     })
   }
 
   function queryIPAddress() {
     request.get('http://ip.taobao.com/service/getIpInfo.php?ip=myip', {}, function(err, response) {
       if (err || response.statusCode > 299) {
-        return false
+        return
       }
 
       const ipInfo = JSON.parse(response.body)
@@ -124,12 +134,12 @@
       return
     }
 
+    const customTitlebar = require('custom-electron-titlebar')
+    titlebar = new customTitlebar.Titlebar({})
+
     queryUsage()
     queryIPAddress()
     $('#autorun').val(remote.app.getLoginItemSettings().openAtLogin)
-
-    const customTitlebar = require('custom-electron-titlebar')
-    titlebar = new customTitlebar.Titlebar({})
   }
 
   window.setInterval(function() {
