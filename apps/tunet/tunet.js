@@ -135,7 +135,9 @@
     }
 
     const customTitlebar = require('custom-electron-titlebar')
-    titlebar = new customTitlebar.Titlebar({})
+    titlebar = new customTitlebar.Titlebar({
+      icon: 'favicon.ico'
+    })
 
     queryUsage()
     queryIPAddress()
