@@ -77,8 +77,8 @@
         queryTimestamp = Date.now()
 
         $('#onlineUserText').text(storage.onlineUser)
-        $('#stateText').text('Online')
-        $('#durationText').text(`${currentTimestamp - onlineTimestamp} seconds ago`)
+        $('#stateText').text($.i18n('Online'))
+        $('#durationText').text($.i18n('$1 seconds ago', currentTimestamp - onlineTimestamp))
       }
 
       const usagePercentage = storage.usage / (25 * 1000000000) * 100
@@ -123,6 +123,17 @@
     remote.app.setLoginItemSettings({ openAtLogin: this.checked })
   })
 
+  $.i18n().load({
+    'zh-CN': 'i18n/zh-CN.json'
+  })
+    .then(function() {
+      storage.i18nMessages = $.i18n().messageStore.messages
+      updateStorage()
+    })
+
+  $.i18n().load(storage.i18nMessages)
+  $('[data-i18n]').i18n();
+
   if (window.require) {
     remote = require('electron').remote
     request = require('request')
@@ -151,7 +162,10 @@
     if (!queryTimestamp) {
       return
     }
-    $('#durationText').text(`${Math.round((Date.now() - queryTimestamp) / 1000) + currentTimestamp - onlineTimestamp} seconds ago`)
+    $('#durationText').text($.i18n(
+      '$1 seconds ago',
+      Math.round((Date.now() - queryTimestamp) / 1000) + currentTimestamp - onlineTimestamp
+    ))
   }, 1000)
 
 })()
