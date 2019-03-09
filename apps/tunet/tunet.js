@@ -57,7 +57,7 @@
       if (!response.body) {
         $('#loginForm').show()
         $('#logoutForm').hide()
-        $('#stateText').text('Offline')
+        $('#stateText').text($.i18n('Offline'))
         $('#usageProgress').text('? MB')
 
         queryTimestamp = null
