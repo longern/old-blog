@@ -120,7 +120,12 @@
   })
 
   $('#autorun').change(function() {
-    remote.app.setLoginItemSettings({ openAtLogin: this.checked })
+    remote.app.setLoginItemSettings({
+      openAtLogin: this.checked,
+      args: [
+        remote.process.argv[remote.process.argv.length - 1]
+      ]
+    })
   })
 
   $.i18n().load({
