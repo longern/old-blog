@@ -155,7 +155,11 @@
 
     queryUsage()
     queryIPAddress()
-    $('#autorun').val(remote.app.getLoginItemSettings().openAtLogin)
+    $('#autorun').prop('checked', remote.app.getLoginItemSettings({
+      args: [
+        remote.process.argv[remote.process.argv.length - 1]
+      ]
+    }).openAtLogin)
     if (storage.onlineUser) {
       $('#usernameInput').val(storage.onlineUser)
     }
