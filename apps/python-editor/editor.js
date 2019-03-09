@@ -109,7 +109,7 @@
   })
 
   if (window.require) {
-    for (var ext of ['html', 'js', 'py', 'txt']) {
+    for (var ext of ['html', 'js', 'md', 'py', 'txt']) {
       window.registerFileExtension(ext)
     }
 
