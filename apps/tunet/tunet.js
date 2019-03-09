@@ -134,6 +134,7 @@
     .then(function() {
       storage.i18nMessages = $.i18n().messageStore.messages
       updateStorage()
+      $('[data-i18n]').i18n();
     })
 
   $.i18n().load(storage.i18nMessages)
