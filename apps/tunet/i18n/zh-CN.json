@@ -1,8 +1,10 @@
 {
     "$1 seconds ago": "$1 秒前",
     "Account": "账户",
+    "Detecting": "探测中",
     "Duration": "在线时间",
     "IP Address": "IP 地址",
+    "IP service unavailable": "IP 服务不可用",
     "Log in": "登录",
     "Log out": "注销",
     "Offline": "离线",

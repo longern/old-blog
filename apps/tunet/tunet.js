@@ -94,19 +94,16 @@
     })
   }
 
-  function queryIPAddress() {
-    request.get('http://ip.taobao.com/service/getIpInfo.php?ip=myip', {}, function(err, response) {
-      if (err || response.statusCode > 299) {
-        return
-      }
+  async function queryIPAddress() {
+    try {
+      const response = await request('http://ip-api.com/json/?lang=zh-CN')
 
-      const ipInfo = JSON.parse(response.body)
-      if (ipInfo.code > 0) {
-        return
-      }
+      const ipInfo = JSON.parse(response)
 
-      $('#ipText').text(ipInfo.data.ip + ', ' + ipInfo.data.region)
-    })
+      $('#ipText').text(ipInfo.query + ', ' + ipInfo.city)
+    } catch(e) {
+      $('#ipText').text($.i18n('IP service unavailable'))
+    }
   }
 
   $('#loginForm').on('submit', function() {
@@ -142,10 +139,10 @@
 
   if (window.require) {
     remote = require('electron').remote
-    request = require('request')
+    request = require('request-promise-native')
 
     if (!request) {
-      installPackage(['request'], function() {
+      installPackage(['request, request-promise-native'], function() {
         location.reload()
       })
       return
