@@ -5,6 +5,8 @@
   }
 
   var storage = JSON.parse(localStorage.getItem('TUNetStorage') || '{}')
+  storage.keytar = storage.keytar || {}
+  updateStorage()
 
   var remote = null
   var request = null
@@ -26,6 +28,11 @@
         ac_id: 1
       }
     })
+
+    if ($('#remember').prop('checked')) {
+      storage.keytar[username] = password
+      updateStorage()
+    }
 
     queryUsage()
   }
@@ -159,6 +166,10 @@
     }).openAtLogin)
     if (storage.onlineUser) {
       $('#usernameInput').val(storage.onlineUser)
+      if (storage.onlineUser in storage.keytar) {
+        $('#passwordInput').val(storage.keytar[storage.onlineUser])
+        $('#remember').prop('checked', true)
+      }
     }
   }
 
