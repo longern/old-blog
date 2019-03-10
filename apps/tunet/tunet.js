@@ -137,16 +137,19 @@
   $.i18n().load(storage.i18nMessages)
   $('[data-i18n]').i18n();
 
-  if (window.require) {
-    remote = require('electron').remote
-    request = require('request-promise-native')
-
-    if (!request) {
-      installPackage(['request, request-promise-native'], function() {
-        location.reload()
-      })
+  window.setInterval(function() {
+    if (!queryTimestamp) {
       return
     }
+    $('#durationText').text($.i18n(
+      '$1 seconds ago',
+      Math.round((Date.now() - queryTimestamp) / 1000) + currentTimestamp - onlineTimestamp
+    ))
+  }, 1000)
+
+  async function nativeMain() {
+    remote = require('electron').remote
+    request = require('request-promise-native')
 
     const customTitlebar = require('custom-electron-titlebar')
     titlebar = new customTitlebar.Titlebar({
@@ -165,14 +168,8 @@
     }
   }
 
-  window.setInterval(function() {
-    if (!queryTimestamp) {
-      return
-    }
-    $('#durationText').text($.i18n(
-      '$1 seconds ago',
-      Math.round((Date.now() - queryTimestamp) / 1000) + currentTimestamp - onlineTimestamp
-    ))
-  }, 1000)
+  if (window.require) {
+    nativeMain()
+  }
 
 })()
