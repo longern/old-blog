@@ -13,74 +13,68 @@
   var currentTimestamp = null
   var queryTimestamp = null
 
-  function login(username, password) {
+  async function login(username, password) {
     if (!request) {
       return
     }
 
-    request.post('https://net.tsinghua.edu.cn/do_login.php', {
+    await request.post('https://net.tsinghua.edu.cn/do_login.php', {
       form: {
         action: 'login',
         username: username,
         password: '{MD5_HEX}' + CryptoJS.MD5(password),
         ac_id: 1
       }
-    }, function(err) {
-      if (!err) {
-        queryUsage()
-      }
     })
+
+    queryUsage()
   }
 
-  function logout() {
+  async function logout() {
     if (!request) {
       return
     }
 
-    request.post('https://net.tsinghua.edu.cn/do_login.php', {
+    await request.post('https://net.tsinghua.edu.cn/do_login.php', {
       form: {
         action: 'logout'
       }
-    }, function(err) {
-      if (!err) {
-        queryUsage()
-      }
     })
+
+    queryUsage()
   }
 
-  function queryUsage() {
-    request.get('http://net.tsinghua.edu.cn/rad_user_info.php', {}, function(err, response) {
-      if (err) {
-        return
+  async function queryUsage() {
+    try {
+      const response = await request('http://net.tsinghua.edu.cn/rad_user_info.php')
+      if (!response)
+        throw new Error('Empty response')
+
+      $('#loginForm').hide()
+      $('#logoutForm').show()
+
+      storage.onlineUser = response.split(',')[0]
+      onlineTimestamp = +response.split(',')[1]
+      currentTimestamp = +response.split(',')[2]
+      storage.usage = +response.split(',')[6]
+      storage.usageLastUpdate = Date.now()
+      queryTimestamp = Date.now()
+
+      $('#onlineUserText').text(storage.onlineUser)
+      $('#stateText').text($.i18n('Online'))
+      $('#durationText').text($.i18n('$1 seconds ago', currentTimestamp - onlineTimestamp))
+    } catch(e) {
+      $('#loginForm').show()
+      $('#logoutForm').hide()
+      $('#stateText').text($.i18n('Offline'))
+      $('#usageProgress').text('? MB')
+
+      queryTimestamp = null
+
+      if (new Date(storage.usageLastUpdate).getMonth() !== new Date().getMonth()) {
+        storage.usage = 0
       }
-      
-      if (!response.body) {
-        $('#loginForm').show()
-        $('#logoutForm').hide()
-        $('#stateText').text($.i18n('Offline'))
-        $('#usageProgress').text('? MB')
-
-        queryTimestamp = null
-
-        if (new Date(storage.usageLastUpdate).getMonth() !== new Date().getMonth()) {
-          storage.usage = 0
-        }
-      } else {
-        $('#loginForm').hide()
-        $('#logoutForm').show()
-
-        storage.onlineUser = response.body.split(',')[0]
-        onlineTimestamp = +response.body.split(',')[1]
-        currentTimestamp = +response.body.split(',')[2]
-        storage.usage = +response.body.split(',')[6]
-        storage.usageLastUpdate = Date.now()
-        queryTimestamp = Date.now()
-
-        $('#onlineUserText').text(storage.onlineUser)
-        $('#stateText').text($.i18n('Online'))
-        $('#durationText').text($.i18n('$1 seconds ago', currentTimestamp - onlineTimestamp))
-      }
-
+    } finally {
       const usagePercentage = storage.usage / (25 * 1000000000) * 100
       $('#usageProgress').css('width', usagePercentage + '%')
 
@@ -91,7 +85,7 @@
       }
 
       updateStorage()
-    })
+    }
   }
 
   async function queryIPAddress() {
