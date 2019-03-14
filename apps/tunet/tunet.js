@@ -169,6 +169,8 @@
       if (storage.onlineUser in storage.keytar) {
         $('#passwordInput').val(storage.keytar[storage.onlineUser])
         $('#remember').prop('checked', true)
+        if ($('#autologin').prop('checked'))
+          $('#loginForm').submit()
       }
     }
   }
