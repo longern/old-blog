@@ -126,7 +126,7 @@
       openFile(ev.dataTransfer.files[0].path)
     }, true)
 
-    window.setApplicationMenu([
+    const menuTemplate = [
       {
         label: $.i18n('&File'),
         submenu: [
@@ -237,9 +237,11 @@
           { label: $.i18n('Update'), role: 'forcereload' }
         ]
       }
-    ])
+    ]
 
     const customTitlebar = require('custom-electron-titlebar')
-    titlebar = new customTitlebar.Titlebar({})
+    titlebar = new customTitlebar.Titlebar({
+      menu: buildFromTemplate(menuTemplate)
+    })
   }
 })()
