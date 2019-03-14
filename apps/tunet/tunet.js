@@ -126,6 +126,11 @@
     })
   })
 
+  $('#autologin').change(function() {
+    storage.autoLogin = this.checked
+    updateStorage()
+  })
+
   $.i18n().load({
     'zh-CN': 'i18n/zh-CN.json'
   })
@@ -159,11 +164,14 @@
 
     queryUsage()
     queryIPAddress()
+
     $('#autorun').prop('checked', remote.app.getLoginItemSettings({
       args: [
         remote.process.argv[remote.process.argv.length - 1]
       ]
     }).openAtLogin)
+    $('#autologin').prop('checked', Boolean(storage.autoLogin))
+
     if (storage.onlineUser) {
       $('#usernameInput').val(storage.onlineUser)
       if (storage.onlineUser in storage.keytar) {
