@@ -1,0 +1,24 @@
+html, body, #app, .v-content, .container {
+  height: 100%;
+}
+
+.v-toolbar {
+  padding-left: 0 !important;
+}
+
+.lyric-wrapper {
+  position: relative;
+  top: 50%;
+}
+
+#lyric {
+  position: relative;
+  font-family: 'Microsoft Yahei';
+  font-size: 24px;
+  text-align: center;
+  transition: top 0.5s;
+}
+
+#lyric>div {
+  min-height: 36px;
+}

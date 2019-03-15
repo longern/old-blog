@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <link href="https://fonts.loli.net/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="player.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lyrics.js@0.4.2/lyrics.min.js" integrity="sha256-/kvWGjYoYXMhMTe/OnX1OhTo3MaMo5iwTKwC1/tfNM4=" crossorigin="anonymous"></script>
+    <div id="app">
+      <v-app>
+        <v-toolbar app>
+          <img src="favicon.ico" height="32">
+          <v-spacer></v-spacer>
+          <v-text-field append-icon="search"></v-text-field>
+        </v-toolbar>
+        <v-navigation-drawer app clipped>
+          <v-list>
+            <v-list-tile
+              v-for="song in p.playlist"
+              ripple
+              @click="$emit('playlistClicked', song)">
+              <v-list-tile-content>{{ song.name }}</v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-navigation-drawer>
+        <v-content>
+          <v-container>
+            <div class="lyric-wrapper">
+              <div v-if="p.lyric" id="lyric">
+                <div v-for="line in p.lyric">
+                  {{ line.text }}
+                </div>
+              </div>
+              <div v-else id="lyric">
+                Instrumental
+              </div>
+            </div>
+          </v-container>
+        </v-content>
+        <v-footer app height="72px" class="pl-4 pr-4">
+          <v-btn round outline icon>
+            <v-icon>skip_previous</v-icon>
+          </v-btn>
+          <v-btn id="btnPlayPause" large round outline icon>
+            <v-icon v-if="p.paused">play_arrow</v-icon>
+            <v-icon v-else>pause</v-icon>
+          </v-btn>
+          <v-btn round outline icon>
+            <v-icon>skip_next</v-icon>
+          </v-btn>
+          <v-slider :step="0" :max="p.duration" class="pl-4 pr-4" v-model="p.currentTime"></v-slider>
+          <span v-text="Math.round(p.currentTime)"></span> /
+          <span v-text="Math.round(p.duration)"></span>
+          <v-btn id="btnRepeatMode" round icon :input-value="p.repeatMode">
+            <v-icon>repeat_one</v-icon>
+          </v-btn>
+          <v-btn round icon>
+            <v-icon>volume_up</v-icon>
+          </v-btn>
+          <v-btn id="btnTopLyric" round icon :input-value="p.topLyric">
+            词
+          </v-btn>
+        </v-footer>
+        </v-content>
+        <audio id="audio" :src="p.src"></audio>
+      </v-app>
+    </div>
+    <script>
+      var app = new Vue({ el: '#app', data: { p: { } } })
+    </script>
+    <script src="player.js"></script>
+  </body>
+</html>
