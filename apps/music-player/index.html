@@ -50,7 +50,9 @@
               :key="song.id"
               ripple
               @click="$emit('playlistClicked', song)">
-              <v-list-tile-content>{{ song.name }}</v-list-tile-content>
+              <v-list-tile-content>
+                {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
+              </v-list-tile-content>
             </v-list-tile>
           </v-list>
         </v-navigation-drawer>
