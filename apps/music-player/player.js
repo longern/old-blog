@@ -1,6 +1,5 @@
 (async function() {
     const { api } = await import('./request.js')
-    console.log(api)
     const _ = require('lodash')
     const audioElement = document.getElementById('audio')
     const player = app.p

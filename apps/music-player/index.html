@@ -57,14 +57,14 @@
           </v-container>
         </v-content>
         <v-footer app height="72px" class="pl-4 pr-4">
-          <v-btn round outline icon>
+          <v-btn icon color="primary">
             <v-icon>skip_previous</v-icon>
           </v-btn>
-          <v-btn id="btnPlayPause" large round outline icon>
+          <v-btn id="btnPlayPause" large icon color="primary">
             <v-icon v-if="p.paused">play_arrow</v-icon>
             <v-icon v-else>pause</v-icon>
           </v-btn>
-          <v-btn round outline icon>
+          <v-btn icon color="primary">
             <v-icon>skip_next</v-icon>
           </v-btn>
           <v-slider :step="0" :max="p.duration" class="pl-4 pr-4" v-model="p.currentTime"></v-slider>
@@ -86,6 +86,7 @@
     </div>
     <script>
       var app = new Vue({ el: '#app', data: { p: { } } })
+      app.$vuetify.theme.primary = "#C20C0C"
     </script>
     <script src="player.js"></script>
   </body>
