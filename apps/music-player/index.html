@@ -53,6 +53,9 @@
               <v-list-tile-content>
                 {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
               </v-list-tile-content>
+              <v-list-tile-action>
+                <v-list-tile-action-text>{{ song.dt / 1000 | duration }}</v-list-tile-action-text>
+              </v-list-tile-action>
             </v-list-tile>
           </v-list>
         </v-navigation-drawer>
@@ -87,8 +90,7 @@
             class="pl-4 pr-4"
             v-model="p.currentTime"
           ></v-slider>
-          <span v-text="Math.round(p.currentTime)"></span> /
-          <span v-text="Math.round(p.duration)"></span>
+          {{ p.currentTime | duration }} / {{ p.duration | duration }}
           <v-btn id="btnRepeatMode" round icon :input-value="p.repeatMode">
             <v-icon>repeat_one</v-icon>
           </v-btn>
@@ -105,6 +107,13 @@
     </div>
 
     <script>
+      Vue.filter('duration', function (value) {
+          value = Math.round(+value)
+          if (isNaN(value))
+              return '00:00'
+          return `${Math.floor(value / 60)}:0${value % 60}`.replace(/0(\d\d)/g, '$1')
+      })
+
       var app = new Vue({ el: '#app', data: { p: { } } })
       app.$vuetify.theme.primary = "#C20C0C"
     </script>
