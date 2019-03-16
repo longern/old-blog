@@ -23,13 +23,13 @@
       <div>
         <span style="position: relative">
           <div class="overlay" ref="line0Overlay">{{ lyricLine0 }}</div>
-          {{ lyricLine0 }}
+          {{ lyricLine0 || "&nbsp;" }}
         </span>
       </div>
       <div>
         <span style="position: relative">
           <div class="overlay" ref="line1Overlay">{{ lyricLine1 }}</div>
-          {{ lyricLine1 }}
+          {{ lyricLine1 || "&nbsp;" }}
         </span>
       </div>
     </div>
@@ -69,14 +69,21 @@
 
         const currentTime = Date.now() / 1000 - lyricApp.startTime
         const currentLine = lyric.select(currentTime)
-        lyricApp[`lyricLine${currentLine % 2}`] = lyric.getLyric(currentLine).text
+
+        if (currentLine >= 0)
+          lyricApp[`lyricLine${currentLine % 2}`] = lyric.getLyric(currentLine).text
+        else
+          lyricApp[`lyricLine1`] = null
         lyricApp.$refs[`line${(currentLine + 1) % 2}Overlay`].style.width = 0
+
         if (lyric.getLyric(currentLine + 1)) {
-          const overlayWidth =
-            (currentTime - lyric.getLyric(currentLine).timestamp) /
-            (lyric.getLyric(currentLine + 1).timestamp - lyric.getLyric(currentLine).timestamp)
-          lyricApp.$refs[`line${currentLine % 2}Overlay`].style.width = `${overlayWidth * 100}%`
           lyricApp[`lyricLine${(currentLine + 1) % 2}`] = lyric.getLyric(currentLine + 1).text
+          if (currentLine >= 0) {
+            const overlayWidth =
+              (currentTime - lyric.getLyric(currentLine).timestamp) /
+              (lyric.getLyric(currentLine + 1).timestamp - lyric.getLyric(currentLine).timestamp)
+            lyricApp.$refs[`line${currentLine % 2}Overlay`].style.width = `${overlayWidth * 100}%`
+          }
         } else {
           lyricApp.$refs[`line${currentLine % 2}Overlay`].style.width = '100%'
         }
