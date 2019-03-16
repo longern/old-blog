@@ -87,8 +87,16 @@
         player.currentTime = audioElement.currentTime
         setTimeout(() => { currentTimeLock = false }, 0)
         player.duration = audioElement.duration
-        if (currentLyric)
-            document.getElementById('lyric').style.top = `-${currentLyric.select(audioElement.currentTime) * 36}px`
+
+        player.lyric.forEach(element => {
+            element.current = false
+        })
+        if (currentLyric) {
+            const currentLine = currentLyric.select(audioElement.currentTime)
+            player.lyric[currentLine].current = true
+            const pixels = -(currentLyric.select(audioElement.currentTime) * 36 + 18)
+            document.getElementById('lyric').style.marginTop = `${pixels}px`
+        }
     })
 
     audioElement.addEventListener('ended', function() {

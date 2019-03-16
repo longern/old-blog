@@ -45,7 +45,7 @@
             <div class="lyric-wrapper">
               <div id="lyric">
                 <template v-if="p.lyric">
-                  <div v-for="line in p.lyric">{{ line.text }}</div>
+                  <div v-for="line in p.lyric" :class="{current: line.current}">{{ line.text }}</div>
                 </template>
                 <span v-else>Instrumental</span>
               </div>

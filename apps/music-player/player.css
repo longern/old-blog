@@ -21,18 +21,25 @@ body, .application {
 }
 
 .lyric-wrapper {
-  position: relative;
-  top: 50%;
-  margin-top: -18px;
+  height: 100%;
 }
 
 #lyric {
   position: relative;
-  font-size: 24px;
+  top: 50%;
+  margin-top: -18px;
+  font-size: 18px;
+  line-height: 36px;
   text-align: center;
-  transition: top 0.5s;
+  transition: margin-top 0.5s;
 }
 
-#lyric>div {
-  min-height: 36px;
+#lyric > div {
+  transition: all 0.5s;
+}
+
+#lyric > .current {
+  color: #C20C0C;
+  font-size: 24px;
+  padding: 8px;
 }
