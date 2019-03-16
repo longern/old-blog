@@ -51,7 +51,7 @@
                 <template v-if="p.lyric">
                   <div v-for="line in p.lyric" :class="{current: line.current}">{{ line.text }}</div>
                 </template>
-                <span v-else>Instrumental</span>
+                <span v-else>No lyrics</span>
               </div>
             </div>
           </v-container>
@@ -73,8 +73,9 @@
           <v-btn id="btnRepeatMode" round icon :input-value="p.repeatMode">
             <v-icon>repeat_one</v-icon>
           </v-btn>
-          <v-btn round icon>
-            <v-icon>volume_up</v-icon>
+          <v-btn id="btnVolume" round icon>
+            <v-icon v-if="p.muted">volume_off</v-icon>
+            <v-icon v-else>volume_up</v-icon>
           </v-btn>
           <v-btn id="btnTopLyric" round icon :input-value="p.topLyric">
             词

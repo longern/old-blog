@@ -4,6 +4,8 @@
     const audioElement = document.getElementById('audio')
     const player = app.p
 
+    let topLyricWindow = null
+
     async function getLyric(id) {
         try {
             const lyricResponse = await api.song.lyric(id)
@@ -24,11 +26,10 @@
         player.paused = false
 
         player.currentSongId = id
+        player.lyric = null
         currentLyric = await getLyric(id)
         if (currentLyric)
             player.lyric = currentLyric.getLyrics()
-        else
-            player.lyric = null
 
         if (!_.some(player.playlist, { id })) {
             try {
@@ -69,6 +70,10 @@
 
     document.getElementById('btnPlayPause').addEventListener('click',  musicPlayPause)
 
+    document.getElementById('btnVolume').addEventListener('click', function() {
+        player.muted = !player.muted
+    })
+
     document.getElementById('btnRepeatMode').addEventListener('click', function() {
         if (!player.repeatMode) {
             player.repeatMode = 'one'
@@ -87,14 +92,17 @@
         setTimeout(() => { currentTimeLock = false }, 0)
         player.duration = audioElement.duration
 
-        player.lyric.forEach(element => {
-            element.current = false
-        })
-        if (currentLyric) {
+        if (currentLyric && player.lyric) {
+            player.lyric.forEach(element => {
+                element.current = false
+            })
+
             const currentLine = currentLyric.select(audioElement.currentTime)
             player.lyric[currentLine].current = true
             const pixels = -(currentLyric.select(audioElement.currentTime) * 36 + 18)
             document.getElementById('lyric').style.marginTop = `${pixels}px`
+        } else {
+            document.getElementById('lyric').style.marginTop = '-18px'
         }
     })
 
@@ -116,6 +124,10 @@
         } catch(e) { /* Ignore */ }
     })
 
+    app.$watch('p.muted', async function() {
+        audioElement.muted = player.muted
+    })
+
     app.$watch('p.currentTime', function() {
         if (currentTimeLock)
             return
@@ -130,12 +142,55 @@
         }
     }, { immediate: true })
 
+    app.$watch('p.topLyric', function() {
+        if (!topLyricWindow)
+            return
+
+        if (player.topLyric) {
+            topLyricWindow.show()
+            require('electron').remote.getCurrentWindow().focus()
+        } else {
+            topLyricWindow.hide()
+        }
+    }, { immediate: true })
+
     app.$on('playlistClicked', function(song) {
         playSong(song.id)
     })
 
     let currentTimeLock = false
     let currentLyric = null
+
+    if (window.require) {
+        const { remote } = require('electron')
+        document.getElementById('btnMinimize').addEventListener('click', function() {
+            remote.getCurrentWindow().minimize()
+        })
+
+        document.getElementById('btnMaximize').addEventListener('click', function() {
+            if (remote.getCurrentWindow().isMaximized())
+                remote.getCurrentWindow().unmaximize()
+            else
+                remote.getCurrentWindow().maximize()
+        })
+
+        topLyricWindow = new remote.BrowserWindow({
+            frame: false,
+            transparent: true,
+            skipTaskbar: true,
+            show: false,
+            alwaysOnTop: true
+        })
+
+        topLyricWindow.loadURL(location.href.replace(/\/[^\/]*$/, '/') + 'topLyric.html')
+
+        topLyricWindow.setIgnoreMouseEvents(true)
+
+        window.addEventListener('unload', function() {
+            topLyricWindow.close()
+            topLyricWindow = null
+        })
+    }
 
     const storage = JSON.parse(localStorage.getItem('MusicPlayerStorage') || '{}')
 
@@ -161,19 +216,5 @@
         } catch(e) {
             player.lyric = null
         }
-    }
-
-    if (window.require) {
-        const { remote } = require('electron')
-        document.getElementById('btnMinimize').addEventListener('click', function() {
-            remote.getCurrentWindow().minimize()
-        })
-
-        document.getElementById('btnMaximize').addEventListener('click', function() {
-            if (remote.getCurrentWindow().isMaximized())
-                remote.getCurrentWindow().unmaximize()
-            else
-                remote.getCurrentWindow().maximize()
-        })
     }
 })()
