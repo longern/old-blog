@@ -107,8 +107,9 @@
             })
 
             const currentLine = currentLyric.select(audioElement.currentTime)
-            player.lyric[currentLine].current = true
-            const pixels = -(currentLyric.select(audioElement.currentTime) * 36 + 18)
+            if (currentLine >= 0)
+                player.lyric[currentLine].current = true
+            const pixels = -(currentLine * 36 + 18)
             document.getElementById('lyric').style.marginTop = `${pixels}px`
         } else {
             document.getElementById('lyric').style.marginTop = '-18px'
