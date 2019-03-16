@@ -2,26 +2,85 @@
   <head>
     <style>
       body {
+        -webkit-app-region: drag;
         font-family: 'Microsoft Yahei';
-        font-size: 20px;
+        font-size: 26px;
+        overflow: hidden;
+      }
+
+      .overlay {
+        color: #ea2000;
+        position: absolute;
+        white-space: nowrap;
+        overflow: hidden;
       }
     </style>
   </head>
   <body>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lyrics.js@0.4.2/lyrics.min.js" integrity="sha256-/kvWGjYoYXMhMTe/OnX1OhTo3MaMo5iwTKwC1/tfNM4=" crossorigin="anonymous"></script>
     <div id="app">
-      <v-app>
-
-      </v-app>
+      <div>
+        <span style="position: relative">
+          <div class="overlay" ref="line0Overlay">{{ lyricLine0 }}</div>
+          {{ lyricLine0 }}
+        </span>
+      </div>
+      <div>
+        <span style="position: relative">
+          <div class="overlay" ref="line1Overlay">{{ lyricLine1 }}</div>
+          {{ lyricLine1 }}
+        </span>
+      </div>
     </div>
     <script>
-      var lyricApp = new Vue({
+      let api
+      let lyric
+      let lyricApp = new Vue({
         el: '#app',
         data: {
-          lyric: null,
-          currentTime: 0
+          currentSongId: 0,
+          lyricLine0: '',
+          lyricLine1: '',
+          opacity: 1.,
+          startTime: 0,
+        },
+        watch: {
+          async currentSongId() {
+            if (!api)
+              api = (await import('./request.js')).api
+            lyric = null
+            const lyricResponse = await api.song.lyric(this.currentSongId)
+            lyric = new Lyrics(lyricResponse.lrc.lyric)
+            currentSongId = lyric.getLyrics().length
+          },
+          opacity() {
+            document.body.style.opacity = this.opacity
+          },
         }
       })
+
+      setInterval(function() {
+        if (!lyric) {
+          lyricApp.lyricLine0 = ''
+          lyricApp.lyricLine1 = ''
+          return
+        }
+
+        const currentTime = Date.now() / 1000 - lyricApp.startTime
+        const currentLine = lyric.select(currentTime)
+        lyricApp[`lyricLine${currentLine % 2}`] = lyric.getLyric(currentLine).text
+        lyricApp.$refs[`line${(currentLine + 1) % 2}Overlay`].style.width = 0
+        if (lyric.getLyric(currentLine + 1)) {
+          const overlayWidth =
+            (currentTime - lyric.getLyric(currentLine).timestamp) /
+            (lyric.getLyric(currentLine + 1).timestamp - lyric.getLyric(currentLine).timestamp)
+          lyricApp.$refs[`line${currentLine % 2}Overlay`].style.width = `${overlayWidth * 100}%`
+          lyricApp[`lyricLine${(currentLine + 1) % 2}`] = lyric.getLyric(currentLine + 1).text
+        } else {
+          lyricApp.$refs[`line${currentLine % 2}Overlay`].style.width = '100%'
+        }
+      }, 10)
     </script>
   </body>
 </html>

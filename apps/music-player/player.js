@@ -55,6 +55,15 @@
 
     }
 
+    function syncWithLyricWindow() {
+        if (!topLyricWindow)
+            return
+        topLyricWindow.webContents.executeJavaScript(`
+            lyricApp.currentSongId = ${player.currentSongId}
+            lyricApp.startTime = ${Date.now() / 1000 - audioElement.currentTime}
+        `)
+    }
+
     document.addEventListener('keydown', function(event) {
         switch(event.which) {
             case 32:
@@ -104,6 +113,7 @@
         } else {
             document.getElementById('lyric').style.marginTop = '-18px'
         }
+        syncWithLyricWindow()
     })
 
     audioElement.addEventListener('ended', function() {
@@ -152,7 +162,7 @@
         } else {
             topLyricWindow.hide()
         }
-    }, { immediate: true })
+    })
 
     app.$on('playlistClicked', function(song) {
         playSong(song.id)
@@ -174,17 +184,28 @@
                 remote.getCurrentWindow().maximize()
         })
 
+        const { width, height } = remote.screen.getPrimaryDisplay().workAreaSize
+
         topLyricWindow = new remote.BrowserWindow({
+            x: width / 2 - 400,
+            y: height - 100,
+            width: 800,
+            height: 80,
             frame: false,
             transparent: true,
             skipTaskbar: true,
             show: false,
-            alwaysOnTop: true
+            alwaysOnTop: true,
+            webPreferences: {
+                nodeIntegration: true
+            }
         })
 
         topLyricWindow.loadURL(location.href.replace(/\/[^\/]*$/, '/') + 'topLyric.html')
 
         topLyricWindow.setIgnoreMouseEvents(true)
+
+        topLyricWindow.webContents.on('did-frame-finish-load', syncWithLyricWindow)
 
         window.addEventListener('unload', function() {
             topLyricWindow.close()

@@ -96,7 +96,6 @@ const api = {
 			if (data.code == 200) {
 				user.id = data.account.id
 				user.name = data.profile.nickname
-				sync()
 				return Promise.resolve(data)
 			}
 			else{
@@ -106,18 +105,7 @@ const api = {
 	},
 	logout: () => {
 		user = {}
-		sync()
-	},
-	refresh : () => {
-		user = JSON.parse(runtime.globalStorage.get('user') || '{}')
-		sync()
 	}
 }
 
-const sync = () => {
-	runtime.globalStorage.set('user', JSON.stringify(user))
-	runtime.stateManager.set('logged', user.cookie ? true : false)
-}
-
 export { api }
-const runtime = require('./runtime.js')
