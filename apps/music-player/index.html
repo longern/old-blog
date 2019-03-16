@@ -18,9 +18,10 @@
           <v-text-field append-icon="search"></v-text-field>
         </v-toolbar>
         <v-navigation-drawer app clipped>
-          <v-list>
+          <v-list dense>
             <v-list-tile
               v-for="song in p.playlist"
+              :key="song.id"
               ripple
               @click="$emit('playlistClicked', song)">
               <v-list-tile-content>{{ song.name }}</v-list-tile-content>
@@ -30,13 +31,11 @@
         <v-content>
           <v-container>
             <div class="lyric-wrapper">
-              <div v-if="p.lyric" id="lyric">
-                <div v-for="line in p.lyric">
-                  {{ line.text }}
-                </div>
-              </div>
-              <div v-else id="lyric">
-                Instrumental
+              <div id="lyric">
+                <template v-if="p.lyric">
+                  <div v-for="line in p.lyric">{{ line.text }}</div>
+                </template>
+                <span v-else>Instrumental</span>
               </div>
             </div>
           </v-container>

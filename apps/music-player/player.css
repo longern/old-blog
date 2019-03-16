@@ -9,6 +9,7 @@ html, body, #app, .v-content, .container {
 .lyric-wrapper {
   position: relative;
   top: 50%;
+  margin-top: -18px;
 }
 
 #lyric {

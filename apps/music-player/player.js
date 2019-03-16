@@ -5,20 +5,6 @@
     const audioElement = document.getElementById('audio')
     const player = app.p
 
-    let currentTimeLock = false
-    let currentLyric = null
-
-    Vue.set(player, 'currentTime', 0)
-    Vue.set(player, 'duration', 0)
-    Vue.set(player, 'repeatMode', null)
-    Vue.set(player, 'lyric', '')
-    Vue.set(player, 'muted', false)
-    Vue.set(player, 'paused', true)
-    Vue.set(player, 'playlist', [])
-    Vue.set(player, 'src', '')
-    Vue.set(player, 'topLyric', false)
-    Vue.set(player, 'volume', 100)
-
     async function getLyric(id) {
         try {
             const lyricResponse = await api.song.lyric(id)
@@ -30,29 +16,31 @@
     }
 
     window.playSong = async function(id) {
+        id = +id
         const urlResponse = await api.song.url(id)
         player.src = urlResponse.data[0].url.replace(/(m\d+?)c/, '$1')
         await app.$nextTick()
+
         audioElement.play()
         player.paused = false
+
+        player.currentSongId = id
         currentLyric = await getLyric(id)
         if (currentLyric)
             player.lyric = currentLyric.getLyrics()
         else
             player.lyric = null
+
+        if (!_.some(player.playlist, { id })) {
+            try {
+                const songDetail = (await api.song.detail(id)).songs[0]
+                player.playlist.push(songDetail)
+            } catch (e) { /* Ignore */ }
+        }
     }
 
     async function musicPlayPause() {
-        try {
-            if (audioElement.paused) {
-                await audioElement.play()
-                player.paused = false
-            }
-            else {
-                await audioElement.pause()
-                player.paused = true
-            }
-        } catch(e) { /* Ignore */ }
+        player.paused = !player.paused
     }
 
     function musicStop() {
@@ -84,10 +72,8 @@
 
     document.getElementById('btnRepeatMode').addEventListener('click', function() {
         if (!player.repeatMode) {
-            audioElement.loop = true
             player.repeatMode = 'one'
         } else {
-            audioElement.loop = false
             player.repeatMode = null
         }
     })
@@ -109,13 +95,64 @@
         player.paused = true
     })
 
-    app.$watch('p.currentTime', function(newVal) {
-        if (currentTimeLock)
-            return
-        audioElement.currentTime = newVal
+    app.$watch('p', function(newVal) {
+        localStorage.setItem('MusicPlayerStorage', JSON.stringify(newVal))
+    }, { deep: true })
+
+    app.$watch('p.paused', async function() {
+        try {
+            if (player.paused) {
+                await audioElement.pause()
+            } else {
+                await audioElement.play()
+            }
+        } catch(e) { /* Ignore */ }
     })
 
-    app.$on('playlistClicked', function(song) {
-        // handle playlist clicked
+    app.$watch('p.currentTime', function() {
+        if (currentTimeLock)
+            return
+        audioElement.currentTime = player.currentTime
     })
+
+    app.$watch('p.repeatMode', function() {
+        if (!player.repeatMode) {
+            audioElement.loop = false
+        } else {
+            audioElement.loop = true
+        }
+    }, { immediate: true })
+
+    app.$on('playlistClicked', function(song) {
+        playSong(song.id)
+    })
+
+    let currentTimeLock = false
+    let currentLyric = null
+
+    const storage = JSON.parse(localStorage.getItem('MusicPlayerStorage') || '{}')
+
+    Vue.set(player, 'currentSongId', storage.currentSongId || 0)
+    Vue.set(player, 'duration', storage.duration || '')
+    Vue.set(player, 'lyric', storage.lyric || '')
+    Vue.set(player, 'muted', storage.muted || false)
+    Vue.set(player, 'playlist', storage.playlist || [])
+    Vue.set(player, 'repeatMode', storage.repeatMode || null)
+    Vue.set(player, 'src', storage.src || '')
+    Vue.set(player, 'topLyric', storage.topLyric || false)
+    Vue.set(player, 'volume', storage.volume || 100)
+
+    Vue.nextTick().then(function() {
+        Vue.set(player, 'paused', storage.paused !== undefined ? storage.paused : true)
+        Vue.set(player, 'currentTime', storage.currentTime || 0)
+    })
+
+    if (player.currentSongId) {
+        try {
+            currentLyric = await getLyric(player.currentSongId)
+            player.lyric = currentLyric.getLyrics()
+        } catch(e) {
+            player.lyric = null
+        }
+    }
 })()
