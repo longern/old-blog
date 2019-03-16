@@ -155,4 +155,18 @@
             player.lyric = null
         }
     }
+
+    if (window.require) {
+        const { remote } = require('electron')
+        document.getElementById('btnMinimize').addEventListener('click', function() {
+            remote.getCurrentWindow().minimize()
+        })
+
+        document.getElementById('btnMaximize').addEventListener('click', function() {
+            if (remote.getCurrentWindow().isMaximized())
+                remote.getCurrentWindow().unmaximize()
+            else
+                remote.getCurrentWindow().maximize()
+        })
+    }
 })()

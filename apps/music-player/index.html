@@ -12,12 +12,24 @@
     <script src="https://cdn.jsdelivr.net/npm/lyrics.js@0.4.2/lyrics.min.js" integrity="sha256-/kvWGjYoYXMhMTe/OnX1OhTo3MaMo5iwTKwC1/tfNM4=" crossorigin="anonymous"></script>
     <div id="app">
       <v-app>
-        <v-toolbar app>
+        <v-toolbar app clipped-left>
           <img src="favicon.ico" height="32">
           <v-spacer></v-spacer>
           <v-text-field append-icon="search"></v-text-field>
+          <v-btn id="btnAccount" round icon>
+            <v-icon>account_circle</v-icon>
+          </v-btn>
+          <v-btn id="btnMinimize" small icon>
+            <v-icon>minimize</v-icon>
+          </v-btn>
+          <v-btn id="btnMaximize" small icon>
+            <v-icon>maximize</v-icon>
+          </v-btn>
+          <v-btn id="btnClose" small icon>
+            <v-icon>close</v-icon>
+          </v-btn>
         </v-toolbar>
-        <v-navigation-drawer app clipped>
+        <v-navigation-drawer app clipped permanent>
           <v-list dense>
             <v-list-tile
               v-for="song in p.playlist"

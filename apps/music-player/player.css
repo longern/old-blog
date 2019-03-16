@@ -2,8 +2,22 @@ html, body, #app, .v-content, .container {
   height: 100%;
 }
 
+/* https://vuetifyjs.com/en/getting-started/frequently-asked-questions#the-scrollbar-is-showing-even-though-my-content-is-not-overflowing-vertically- */
+html {
+  overflow-y: hidden;
+}
+
+body, .application {
+  font-family: 'Microsoft Yahei';
+  user-select: none;
+}
+
 .v-toolbar {
-  padding-left: 0 !important;
+  -webkit-app-region: drag;
+}
+
+.v-toolbar button, input {
+  -webkit-app-region: none;
 }
 
 .lyric-wrapper {
@@ -14,7 +28,6 @@ html, body, #app, .v-content, .container {
 
 #lyric {
   position: relative;
-  font-family: 'Microsoft Yahei';
   font-size: 24px;
   text-align: center;
   transition: top 0.5s;
