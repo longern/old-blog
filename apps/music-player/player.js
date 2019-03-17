@@ -177,6 +177,10 @@
         playSong(song.id)
     })
 
+    app.$on('playlistDeleteClicked', function(song) {
+        player.playlist.splice(player.playlist.indexOf(song))
+    })
+
     app.$on('startSearch', async function() {
         if (!player.search)
             return

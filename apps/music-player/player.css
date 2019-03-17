@@ -25,6 +25,14 @@ body, .application {
   overflow-y: auto;
 }
 
+.playlist-item .btn-playlist-delete {
+  opacity: 0;
+}
+
+  .playlist-item:hover .btn-playlist-delete {
+    opacity: 1;
+  }
+
 .lyric-wrapper {
   height: 100%;
 }

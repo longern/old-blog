@@ -51,12 +51,22 @@
               v-for="song in p.playlist"
               :key="song.id"
               ripple
+              class="playlist-item"
               @click="$emit('playlistClicked', song)">
               <v-list-tile-content>
                 {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-list-tile-action-text>{{ song.dt / 1000 | duration }}</v-list-tile-action-text>
+                <v-list-tile-action-text>
+                  <v-btn
+                    icon
+                    class="mr-2 btn-playlist-delete"
+                    @click.stop="$emit('playlistDeleteClicked', song)"
+                  >
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  {{ song.dt / 1000 | duration }}
+                </v-list-tile-action-text>
               </v-list-tile-action>
             </v-list-tile>
           </v-list>
