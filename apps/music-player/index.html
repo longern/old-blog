@@ -23,14 +23,12 @@
           <v-btn icon @click="p.searchResult = null">
             <v-icon>arrow_back</v-icon>
           </v-btn>
-          <v-autocomplete
-            ref="search"
-            :search-input.sync="p.search"
-            hide-no-data
+          <v-text-field
+            v-model="p.search"
             append-icon="search"
             @click:append="$emit('startSearch')"
             @keyup.enter="$emit('startSearch')"
-          ></v-autocomplete>
+          ></v-text-field>
           <v-spacer></v-spacer>
           <v-btn id="btnSettings" icon>
             <v-icon>settings</v-icon>
