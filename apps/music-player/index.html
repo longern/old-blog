@@ -107,14 +107,14 @@
         </v-content>
 
         <v-footer app height="72px" class="pl-4 pr-4">
-          <v-btn icon color="primary">
+          <v-btn id="btnPreviousTrack" icon color="primary">
             <v-icon>skip_previous</v-icon>
           </v-btn>
           <v-btn id="btnPlayPause" large icon color="primary">
             <v-icon v-if="p.paused">play_arrow</v-icon>
             <v-icon v-else>pause</v-icon>
           </v-btn>
-          <v-btn icon color="primary">
+          <v-btn  id="btnNextTrack"icon color="primary">
             <v-icon>skip_next</v-icon>
           </v-btn>
           <v-slider

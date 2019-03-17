@@ -48,11 +48,29 @@
     }
 
     function musicNextTrack() {
+        if (!player.playlist.length)
+            return
 
+        let currentIndex = _.findIndex(player.playlist, {
+            id: player.currentSongId
+        })
+        if (currentIndex === player.playlist.length - 1)
+            currentIndex = -1
+        // If currentIndex is -1, just play the first song
+        playSong(player.playlist[currentIndex + 1].id)
     }
 
     function musicPreviousTrack() {
+        if (!player.playlist.length)
+            return
 
+        let currentIndex = _.findIndex(player.playlist, {
+            id: player.currentSongId
+        })
+        if (currentIndex <= 0)
+            currentIndex = player.playlist.length
+        // If currentIndex is -1, just play the last song
+        playSong(player.playlist[currentIndex - 1].id)
     }
 
     function syncWithLyricWindow() {
@@ -78,7 +96,11 @@
         }
     })
 
+    document.getElementById('btnPreviousTrack').addEventListener('click',  musicPreviousTrack)
+
     document.getElementById('btnPlayPause').addEventListener('click',  musicPlayPause)
+
+    document.getElementById('btnNextTrack').addEventListener('click',  musicNextTrack)
 
     document.getElementById('btnVolume').addEventListener('click', function() {
         player.muted = !player.muted
@@ -125,13 +147,7 @@
     audioElement.addEventListener('ended', function() {
         player.paused = true
         if (player.repeatMode === 'list') {
-            let currentIndex = _.findIndex(player.playlist, {
-                id: player.currentSongId
-            })
-            if (currentIndex === player.playlist.length - 1)
-                currentIndex = -1
-            // If currentIndex is -1, just play the first song
-            playSong(player.playlist[currentIndex + 1].id)
+            musicNextTrack()
         }
         if (player.repeatMode === 'shuffle') {
             const candidateSongs = _.reject(player.playlist, {
