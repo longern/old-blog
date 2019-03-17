@@ -198,6 +198,8 @@
 
     if (window.require) {
         const { remote } = require('electron')
+
+        // Handle window buttons: minimize, maximize and close
         document.getElementById('btnMinimize').addEventListener('click', function() {
             remote.getCurrentWindow().minimize()
         })
@@ -207,6 +209,10 @@
                 remote.getCurrentWindow().unmaximize()
             else
                 remote.getCurrentWindow().maximize()
+        })
+
+        document.getElementById('btnClose').addEventListener('click', function() {
+            remote.getCurrentWindow().close()
         })
 
         const { width, height } = remote.screen.getPrimaryDisplay().workAreaSize
