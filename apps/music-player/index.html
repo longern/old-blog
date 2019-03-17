@@ -20,6 +20,9 @@
         <v-toolbar app clipped-left height="64">
           <img src="favicon.ico" height="32">
           <v-spacer></v-spacer>
+          <v-btn icon @click="p.searchResult = null">
+            <v-icon>arrow_back</v-icon>
+          </v-btn>
           <v-autocomplete
             ref="search"
             :search-input.sync="p.search"
@@ -28,10 +31,10 @@
             @click:append="$emit('startSearch')"
           ></v-autocomplete>
           <v-spacer></v-spacer>
-          <v-btn id="btnSettings" round icon>
+          <v-btn id="btnSettings" icon>
             <v-icon>settings</v-icon>
           </v-btn>
-          <v-btn id="btnAccount" round icon>
+          <v-btn id="btnAccount" icon>
             <v-icon>account_circle</v-icon>
           </v-btn>
           <v-btn id="btnMinimize" small icon>
@@ -122,16 +125,16 @@
             v-model="p.currentTime"
           ></v-slider>
           {{ p.currentTime | duration }} / {{ p.duration | duration }}
-          <v-btn id="btnRepeatMode" round icon :input-value="p.repeatMode">
+          <v-btn id="btnRepeatMode" icon :input-value="p.repeatMode">
             <v-icon v-if="p.repeatMode === 'shuffle'">shuffle</v-icon>
             <v-icon v-else-if="p.repeatMode === 'one'">repeat_one</v-icon>
             <v-icon v-else>repeat</v-icon>
           </v-btn>
-          <v-btn id="btnVolume" round icon>
+          <v-btn id="btnVolume" icon>
             <v-icon v-if="p.muted">volume_off</v-icon>
             <v-icon v-else>volume_up</v-icon>
           </v-btn>
-          <v-btn id="btnTopLyric" round icon :input-value="p.topLyric">
+          <v-btn id="btnTopLyric" icon :input-value="p.topLyric">
             词
           </v-btn>
         </v-footer>
