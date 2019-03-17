@@ -5,6 +5,7 @@
     const player = app.p
 
     let topLyricWindow = null
+    let loginWindow = null
 
     async function getLyric(id) {
         try {
@@ -71,6 +72,18 @@
             currentIndex = player.playlist.length
         // If currentIndex is -1, just play the last song
         playSong(player.playlist[currentIndex - 1].id)
+    }
+
+    async function syncCookies() {
+        const { remote } = require('electron')
+        const cookies = await new Promise((resolve, reject) => {
+            remote.getCurrentWebContents().session.cookies.get({
+                url: 'http://music.163.com'
+            }, (error, cookies) => {
+                resolve(cookies)
+            })
+        })
+        api.cookie.set(cookies.map(c => `${c.name}=${c.value}`).join(';'))
     }
 
     function syncWithLyricWindow() {
@@ -230,6 +243,35 @@
     if (window.require) {
         const { remote } = require('electron')
 
+        document.getElementById('btnAccount').addEventListener('click', async function() {
+            if (loginWindow) {
+                loginWindow.show()
+                return
+            }
+
+            loginWindow = new remote.BrowserWindow()
+            loginWindow.loadURL('https://music.163.com/api/sns/authorize?snsType=5')
+
+            loginWindow.webContents.on('did-finish-load', async function() {
+                const reAfterLogin = /^https:\/\/music.163.com\/back\/sns/
+                if (loginWindow.webContents.getURL().match(reAfterLogin)) {
+                    try {
+                        const text = await loginWindow.webContents.executeJavaScript('document.body.innerText')
+                        const loginResponse = JSON.parse(text)
+                        player.userId = loginResponse.account.id
+                        player.avatarUrl = loginResponse.profile.avatarUrl
+                        player.nickname = loginResponse.profile.nickname
+                        syncCookies()
+                    } catch(e) { }
+                    loginWindow.close()
+                }
+            })
+
+            loginWindow.on('closed', function() {
+                loginWindow = null
+            })
+        })
+
         // Handle window buttons: minimize, maximize and close
         document.getElementById('btnMinimize').addEventListener('click', function() {
             remote.getCurrentWindow().minimize()
@@ -282,18 +324,21 @@
         storage = JSON.parse(localStorage.getItem('MusicPlayerStorage'))
     } catch(e) { }
 
+    Vue.set(player, 'avatarUrl', storage.avatarUrl || '')
     Vue.set(player, 'currentSongId', storage.currentSongId || 0)
     Vue.set(player, 'duration', storage.duration || '')
     Vue.set(player, 'loginDialog', false)
     Vue.set(player, 'loginPassword', '')
-    Vue.set(player, 'loginUsername', '')
+    Vue.set(player, 'loginUsername', storage.loginUsername || '')
     Vue.set(player, 'muted', storage.muted || false)
+    Vue.set(player, 'nickname', storage.nickname || '')
     Vue.set(player, 'playlist', storage.playlist || [])
     Vue.set(player, 'repeatMode', storage.repeatMode || null)
     Vue.set(player, 'search', storage.search || '')
     Vue.set(player, 'searchResult', null)
     Vue.set(player, 'src', storage.src || '')
     Vue.set(player, 'topLyric', storage.topLyric || false)
+    Vue.set(player, 'userId', 0)
     Vue.set(player, 'volume', storage.volume || 100)
 
     Vue.nextTick().then(function() {

@@ -30,11 +30,12 @@
             @keyup.enter="$emit('startSearch')"
           ></v-text-field>
           <v-spacer></v-spacer>
+          <v-btn id="btnAccount" icon>
+            <v-icon>account_circle</v-icon>
+          </v-btn>
+          <span>{{ p.nickname }}</span>
           <v-btn id="btnSettings" icon>
             <v-icon>settings</v-icon>
-          </v-btn>
-          <v-btn id="btnAccount" icon @click="p.loginDialog = true">
-            <v-icon>account_circle</v-icon>
           </v-btn>
           <v-btn id="btnMinimize" small icon>
             <v-icon>minimize</v-icon>
@@ -140,34 +141,6 @@
           </v-btn>
         </v-footer>
 
-        <v-dialog v-model="p.loginDialog" max-width="290">
-          <v-card>
-            <v-card-title class="headline">Login</v-card-title>
-
-            <v-card-text>
-              <v-text-field
-                v-model="p.loginUsername"
-                label="Username"
-              ></v-text-field>
-              <v-text-field
-                v-model="p.loginPassword"
-                label="Password"
-              ></v-text-field>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn @click="p.loginDialog = false">
-                Login
-              </v-btn>
-
-              <v-btn @click="p.loginDialog = false">
-                Cancel
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
         <audio id="audio" :src="p.src"></audio>
       </v-app>
     </div>
