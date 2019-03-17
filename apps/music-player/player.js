@@ -190,7 +190,7 @@
     })
 
     app.$on('playlistDeleteClicked', function(song) {
-        player.playlist.splice(player.playlist.indexOf(song))
+        player.playlist.splice(player.playlist.indexOf(song), 1)
     })
 
     app.$on('startSearch', async function() {
