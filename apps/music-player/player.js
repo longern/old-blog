@@ -85,6 +85,8 @@
 
     document.getElementById('btnRepeatMode').addEventListener('click', function() {
         if (!player.repeatMode) {
+            player.repeatMode = 'shuffle'
+        } else if (player.repeatMode === 'shuffle') {
             player.repeatMode = 'one'
         } else {
             player.repeatMode = null
@@ -119,6 +121,12 @@
 
     audioElement.addEventListener('ended', function() {
         player.paused = true
+        if (player.repeatMode === 'shuffle') {
+            const candidateSongs = _.reject(player.playlist, {
+                id: player.currentSongId
+            })
+            playSong(candidateSongs[_.random(candidateSongs.length - 1)].id)
+        }
     })
 
     app.$watch('p', function(newVal) {
@@ -146,7 +154,7 @@
     })
 
     app.$watch('p.repeatMode', function() {
-        if (!player.repeatMode) {
+        if (player.repeatMode !== 'one') {
             audioElement.loop = false
         } else {
             audioElement.loop = true
