@@ -126,9 +126,10 @@
           ></v-slider>
           {{ p.currentTime | duration }} / {{ p.duration | duration }}
           <v-btn id="btnRepeatMode" icon :input-value="p.repeatMode">
-            <v-icon v-if="p.repeatMode === 'shuffle'">shuffle</v-icon>
+            <v-icon v-if="p.repeatMode === 'list'">repeat</v-icon>
+            <v-icon v-else-if="p.repeatMode === 'shuffle'">shuffle</v-icon>
             <v-icon v-else-if="p.repeatMode === 'one'">repeat_one</v-icon>
-            <v-icon v-else>repeat</v-icon>
+            <v-icon v-else>arrow_right_alt</v-icon>
           </v-btn>
           <v-btn id="btnVolume" icon>
             <v-icon v-if="p.muted">volume_off</v-icon>

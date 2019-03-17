@@ -86,6 +86,8 @@
 
     document.getElementById('btnRepeatMode').addEventListener('click', function() {
         if (!player.repeatMode) {
+            player.repeatMode = 'list'
+        } else if (player.repeatMode === 'list') {
             player.repeatMode = 'shuffle'
         } else if (player.repeatMode === 'shuffle') {
             player.repeatMode = 'one'
@@ -122,6 +124,15 @@
 
     audioElement.addEventListener('ended', function() {
         player.paused = true
+        if (player.repeatMode === 'list') {
+            let currentIndex = _.findIndex(player.playlist, {
+                id: player.currentSongId
+            })
+            if (currentIndex === player.playlist.length - 1)
+                currentIndex = -1
+            // If currentIndex is -1, just play the first song
+            playSong(player.playlist[currentIndex + 1].id)
+        }
         if (player.repeatMode === 'shuffle') {
             const candidateSongs = _.reject(player.playlist, {
                 id: player.currentSongId
