@@ -29,6 +29,7 @@
             hide-no-data
             append-icon="search"
             @click:append="$emit('startSearch')"
+            @keyup.enter="$emit('startSearch')"
           ></v-autocomplete>
           <v-spacer></v-spacer>
           <v-btn id="btnSettings" icon>
