@@ -158,7 +158,10 @@
     })
 
     app.$watch('p', function(newVal) {
-        localStorage.setItem('MusicPlayerStorage', JSON.stringify(newVal))
+        localStorage.setItem(
+            'MusicPlayerStorage',
+            JSON.stringify(_.omit(newVal, ['loginPassword']))
+        )
     }, { deep: true })
 
     app.$watch('p.paused', async function() {
@@ -243,16 +246,6 @@
             remote.getCurrentWindow().close()
         })
 
-        // Manually copy cookies
-        const cookies = await new Promise((resolve, reject) => {
-            remote.getCurrentWebContents().session.cookies.get({
-                url: 'http://music.163.com'
-            }, (error, cookies) => {
-                resolve(cookies)
-            })
-        })
-        api.cookie.set(cookies.map(c => `${c.name}=${c.value}`).join(';'))
-
         // Create lyric window (bottom, center)
         const { width, height } = remote.screen.getPrimaryDisplay().workAreaSize
 
@@ -284,10 +277,16 @@
     }
 
     // Load data from localStorage
-    const storage = JSON.parse(localStorage.getItem('MusicPlayerStorage') || '{}')
+    let storage = {}
+    try {
+        storage = JSON.parse(localStorage.getItem('MusicPlayerStorage'))
+    } catch(e) { }
 
     Vue.set(player, 'currentSongId', storage.currentSongId || 0)
     Vue.set(player, 'duration', storage.duration || '')
+    Vue.set(player, 'loginDialog', false)
+    Vue.set(player, 'loginPassword', '')
+    Vue.set(player, 'loginUsername', '')
     Vue.set(player, 'muted', storage.muted || false)
     Vue.set(player, 'playlist', storage.playlist || [])
     Vue.set(player, 'repeatMode', storage.repeatMode || null)
