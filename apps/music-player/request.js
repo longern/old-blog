@@ -105,6 +105,9 @@ const api = {
 	},
 	logout: () => {
 		user = {}
+	},
+	cookie: {
+		set: c => user.cookie = c
 	}
 }
 

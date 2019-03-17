@@ -243,6 +243,16 @@
             remote.getCurrentWindow().close()
         })
 
+        // Manually copy cookies
+        const cookies = await new Promise((resolve, reject) => {
+            remote.getCurrentWebContents().session.cookies.get({
+                url: 'http://music.163.com'
+            }, (error, cookies) => {
+                resolve(cookies)
+            })
+        })
+        api.cookie.set(cookies.map(c => `${c.name}=${c.value}`).join(';'))
+
         // Create lyric window (bottom, center)
         const { width, height } = remote.screen.getPrimaryDisplay().workAreaSize
 
