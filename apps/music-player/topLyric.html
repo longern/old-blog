@@ -43,6 +43,7 @@
           lyricLine0: '',
           lyricLine1: '',
           opacity: 1.,
+          paused: false,
           startTime: 0,
         },
         watch: {
@@ -64,6 +65,10 @@
         if (!lyric) {
           lyricApp.lyricLine0 = ''
           lyricApp.lyricLine1 = ''
+          return
+        }
+
+        if (lyricApp.paused) {
           return
         }
 

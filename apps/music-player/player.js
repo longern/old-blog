@@ -61,6 +61,7 @@
         topLyricWindow.webContents.executeJavaScript(`
             lyricApp.currentSongId = ${player.currentSongId}
             lyricApp.startTime = ${Date.now() / 1000 - audioElement.currentTime}
+            lyricApp.paused = ${player.paused}
         `)
     }
 
@@ -215,6 +216,7 @@
             remote.getCurrentWindow().close()
         })
 
+        // Create lyric window (bottom, center)
         const { width, height } = remote.screen.getPrimaryDisplay().workAreaSize
 
         topLyricWindow = new remote.BrowserWindow({
@@ -244,6 +246,7 @@
         })
     }
 
+    // Load data from localStorage
     const storage = JSON.parse(localStorage.getItem('MusicPlayerStorage') || '{}')
 
     Vue.set(player, 'currentSongId', storage.currentSongId || 0)
