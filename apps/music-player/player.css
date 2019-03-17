@@ -16,8 +16,13 @@ body, .application {
   -webkit-app-region: drag;
 }
 
-.v-toolbar button, input {
+.v-toolbar button, input, .v-input__slot {
   -webkit-app-region: none;
+}
+
+.search-result {
+  height: 100%;
+  overflow-y: auto;
 }
 
 .lyric-wrapper {

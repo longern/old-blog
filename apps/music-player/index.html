@@ -22,8 +22,10 @@
           <v-spacer></v-spacer>
           <v-autocomplete
             ref="search"
+            :search-input.sync="p.search"
             hide-no-data
             append-icon="search"
+            @click:append="$emit('startSearch')"
           ></v-autocomplete>
           <v-spacer></v-spacer>
           <v-btn id="btnSettings" round icon>
@@ -61,7 +63,26 @@
         </v-navigation-drawer>
 
         <v-content>
-          <v-container>
+          <div class="search-result" v-if="p.searchResult">
+            <v-data-table
+              :items="p.searchResult"
+              hide-actions
+              hide-headers
+            >
+              <template v-slot:items="props">
+                <td>{{ props.item.name }}</td>
+                <td>{{ props.item.artists.map(a => a.name).join('、') }}</td>
+                <td>《{{ props.item.album.name }}》</td>
+                <td>{{ props.item.duration / 1000 | duration }}</td>
+                <td>
+                  <v-btn icon @click="$emit('searchResultPlayClicked', props.item.id)">
+                    <v-icon>play_arrow</v-icon>
+                  </v-btn>
+                </td>
+              </template>
+            </v-data-table>
+          </div>
+          <v-container v-show="!p.searchResult">
             <div class="lyric-wrapper">
               <div id="lyric">
                 <template v-if="p.lyric">

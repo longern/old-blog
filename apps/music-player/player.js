@@ -177,6 +177,18 @@
         playSong(song.id)
     })
 
+    app.$on('startSearch', async function() {
+        if (!player.search)
+            return
+        try {
+            player.searchResult = (await api.search.type(player.search, 1)).result.songs
+        } catch (e) { }
+    })
+
+    app.$on('searchResultPlayClicked', function(id) {
+        playSong(id)
+    })
+
     let currentTimeLock = false
     let currentLyric = null
 
@@ -226,10 +238,11 @@
 
     Vue.set(player, 'currentSongId', storage.currentSongId || 0)
     Vue.set(player, 'duration', storage.duration || '')
-    Vue.set(player, 'lyric', storage.lyric || '')
     Vue.set(player, 'muted', storage.muted || false)
     Vue.set(player, 'playlist', storage.playlist || [])
     Vue.set(player, 'repeatMode', storage.repeatMode || null)
+    Vue.set(player, 'search', storage.search || '')
+    Vue.set(player, 'searchResult', null)
     Vue.set(player, 'src', storage.src || '')
     Vue.set(player, 'topLyric', storage.topLyric || false)
     Vue.set(player, 'volume', storage.volume || 100)
