@@ -136,9 +136,7 @@
     })
 
     audioElement.addEventListener('timeupdate', function() {
-        currentTimeLock = true
         player.currentTime = audioElement.currentTime
-        setTimeout(() => { currentTimeLock = false }, 0)
         player.duration = audioElement.duration
 
         if (currentLyric && player.lyric) {
@@ -191,12 +189,6 @@
         audioElement.muted = player.muted
     })
 
-    app.$watch('p.currentTime', function() {
-        if (currentTimeLock)
-            return
-        audioElement.currentTime = player.currentTime
-    })
-
     app.$watch('p.repeatMode', function() {
         if (player.repeatMode !== 'one') {
             audioElement.loop = false
@@ -237,7 +229,11 @@
         playSong(id)
     })
 
-    let currentTimeLock = false
+    app.$on('audioSliderInput', function(t) {
+        audioElement.currentTime = t
+        player.currentTime = t
+    })
+
     let currentLyric = null
 
     if (window.require) {
@@ -344,6 +340,7 @@
     Vue.nextTick().then(function() {
         Vue.set(player, 'paused', storage.paused !== undefined ? storage.paused : true)
         Vue.set(player, 'currentTime', storage.currentTime || 0)
+        audioElement.currentTime = storage.currentTime
     })
 
     if (player.currentSongId) {

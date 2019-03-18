@@ -123,7 +123,8 @@
             :step="0"
             :max="p.duration"
             class="pl-4 pr-4"
-            v-model="p.currentTime"
+            :value="p.currentTime"
+            @input="$emit('audioSliderInput', $event)"
           ></v-slider>
           {{ p.currentTime | duration }} / {{ p.duration | duration }}
           <v-btn id="btnRepeatMode" icon :input-value="p.repeatMode">
