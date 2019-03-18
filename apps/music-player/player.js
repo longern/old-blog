@@ -230,6 +230,8 @@
     })
 
     app.$on('audioSliderInput', function(t) {
+        if (isNaN(t))
+            return
         audioElement.currentTime = t
         player.currentTime = t
     })
