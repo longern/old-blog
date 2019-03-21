@@ -51,29 +51,33 @@
         <v-navigation-drawer app clipped permanent>
           <v-list dense>
             <v-list-group
+              v-for="playlist in p.playlists"
+              :key="playlist.id"
               :value="true"
             >
               <template v-slot:activator>
                 <v-list-tile>
                   <v-list-tile-content>
-                    Default Playlist
+                    {{ playlist.name }}
                   </v-list-tile-content>
                 </v-list-tile>
               </template>
               <v-list-tile
-                v-for="song in p.playlist"
+                v-for="song in playlist"
                 :key="song.id"
                 ripple
                 class="playlist-item"
                 @click="$emit('playlistClicked', song)">
                 <v-list-tile-content>
-                  {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
+                  <div class="playlist-song-name">
+                    {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
+                  </div>
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <v-list-tile-action-text>
                     <v-btn
                       icon
-                      class="mr-2 btn-playlist-delete"
+                      class="btn-playlist-delete"
                       @click.stop="$emit('playlistDeleteClicked', song)"
                     >
                       <v-icon>delete</v-icon>

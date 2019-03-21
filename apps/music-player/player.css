@@ -33,6 +33,13 @@ body, .application {
     opacity: 1;
   }
 
+.playlist-item .playlist-song-name {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .lyric-wrapper {
   height: 100%;
 }

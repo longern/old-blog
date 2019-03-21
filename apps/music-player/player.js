@@ -17,6 +17,23 @@
         }
     }
 
+    async function getPlaylists() {
+        if (!player.userId)
+            return
+        try {
+            const playlistsData = (await api.user.playlist(player.userId)).playlist
+            const details = await Promise.all(playlistsData.map(data => (
+                api.playlist.detail(data.id)
+            )))
+            player.playlists = details.map(detail => {
+                const tracks = detail.playlist.tracks
+                tracks.id = detail.playlist.id
+                tracks.name = detail.playlist.name
+                return tracks
+            })
+        } catch(e) { }
+    }
+
     window.playSong = async function(id) {
         id = +id
         const urlResponse = await api.song.url(id)
@@ -334,6 +351,7 @@
     Vue.set(player, 'muted', storage.muted || false)
     Vue.set(player, 'nickname', storage.nickname || '')
     Vue.set(player, 'playlist', storage.playlist || [])
+    Vue.set(player, 'playlists', storage.playlists || [])
     Vue.set(player, 'repeatMode', storage.repeatMode || null)
     Vue.set(player, 'search', storage.search || '')
     Vue.set(player, 'searchResult', null)
@@ -355,5 +373,9 @@
         } catch(e) {
             player.lyric = null
         }
+    }
+
+    if (player.userId) {
+        getPlaylists()
     }
 })()
