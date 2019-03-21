@@ -339,7 +339,7 @@
     Vue.set(player, 'searchResult', null)
     Vue.set(player, 'src', storage.src || '')
     Vue.set(player, 'topLyric', storage.topLyric || false)
-    Vue.set(player, 'userId', 0)
+    Vue.set(player, 'userId', storage.userId || 0)
     Vue.set(player, 'volume', storage.volume || 100)
 
     Vue.nextTick().then(function() {
