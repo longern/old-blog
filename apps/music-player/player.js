@@ -171,7 +171,10 @@
     app.$watch('p', function(newVal) {
         localStorage.setItem(
             'MusicPlayerStorage',
-            JSON.stringify(_.omit(newVal, ['loginPassword']))
+            JSON.stringify(_.omit(newVal, [
+                'loginPassword',
+                'lyric'
+            ]))
         )
     }, { deep: true })
 
