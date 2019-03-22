@@ -157,6 +157,13 @@
           </v-btn>
         </v-footer>
 
+        <v-snackbar v-model="p.snackbar">
+          {{ p.snackbarText }}
+          <v-btn icon @click="p.snackbar = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-snackbar>
+
         <audio id="audio" :src="p.src"></audio>
       </v-app>
     </div>

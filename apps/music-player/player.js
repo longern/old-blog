@@ -7,6 +7,11 @@
     let topLyricWindow = null
     let loginWindow = null
 
+    function showSnackbar(text) {
+        player.snackbar = true
+        player.snackbarText = text
+    }
+
     async function getLyric(id) {
         try {
             const lyricResponse = await api.song.lyric(id)
@@ -37,6 +42,10 @@
     window.playSong = async function(id) {
         id = +id
         const urlResponse = await api.song.url(id)
+        if (urlResponse.data[0].code >= 400) {
+            showSnackbar('Song not found')
+            return
+        }
         player.src = urlResponse.data[0].url.replace(/(m\d+?)c/, '$1')
         await app.$nextTick()
 
@@ -355,6 +364,8 @@
     Vue.set(player, 'repeatMode', storage.repeatMode || null)
     Vue.set(player, 'search', storage.search || '')
     Vue.set(player, 'searchResult', null)
+    Vue.set(player, 'snackbar', false)
+    Vue.set(player, 'snackbarText', '')
     Vue.set(player, 'src', storage.src || '')
     Vue.set(player, 'topLyric', storage.topLyric || false)
     Vue.set(player, 'userId', storage.userId || 0)
