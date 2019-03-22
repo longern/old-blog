@@ -279,7 +279,7 @@
                         player.userId = loginResponse.account.id
                         player.avatarUrl = loginResponse.profile.avatarUrl
                         player.nickname = loginResponse.profile.nickname
-                        syncCookies()
+                        syncCookies().then(getPlaylists)
                     } catch(e) { }
                     loginWindow.close()
                 }
