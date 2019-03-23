@@ -354,7 +354,6 @@
     Vue.set(player, 'avatarUrl', storage.avatarUrl || '')
     Vue.set(player, 'currentSongId', storage.currentSongId || 0)
     Vue.set(player, 'duration', storage.duration || '')
-    Vue.set(player, 'loginDialog', false)
     Vue.set(player, 'loginPassword', '')
     Vue.set(player, 'loginUsername', storage.loginUsername || '')
     Vue.set(player, 'muted', storage.muted || false)
