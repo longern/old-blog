@@ -31,7 +31,10 @@
           ></v-text-field>
           <v-spacer></v-spacer>
           <v-btn id="btnAccount" icon>
-            <v-icon>account_circle</v-icon>
+            <v-avatar v-if='p.avatarUrl' size="36">
+              <img :src="p.avatarUrl + '?param=36x36'">
+            </v-avatar>
+            <v-icon v-else>account_circle</v-icon>
           </v-btn>
           <span>{{ p.nickname }}</span>
           <v-btn id="btnSettings" icon>
