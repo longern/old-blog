@@ -238,6 +238,10 @@
         }
     })
 
+    app.$watch('p.volume', async function() {
+        audioElement.volume = player.volume
+    })
+
     app.$on('playlistClicked', function(song) {
         playSong(song.id)
     })

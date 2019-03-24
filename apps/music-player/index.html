@@ -154,8 +154,17 @@
           </v-btn>
           <v-btn id="btnVolume" icon>
             <v-icon v-if="p.muted">volume_off</v-icon>
+            <v-icon v-else-if="p.volume === 0">volume_mute</v-icon>
+            <v-icon v-else-if="p.volume < 0.5">volume_down</v-icon>
             <v-icon v-else>volume_up</v-icon>
           </v-btn>
+          <div class="mr-2" style="width: 100px">
+            <v-slider
+              v-model="p.volume"
+              :step="0"
+              :max="1"
+            ></v-slider>
+          </div>
           <v-btn id="btnTopLyric" icon :input-value="p.topLyric">
             词
           </v-btn>
