@@ -242,6 +242,18 @@
         playSong(song.id)
     })
 
+    app.$on('playlistMenu', function(event, song) {
+        player.menu.show = true
+        player.menu.x = event.clientX
+        player.menu.y = event.clientY
+        player.menu.items = [{
+            label: 'Delete',
+            click() {
+                player.playlist.splice(player.playlist.indexOf(song), 1)
+            }
+        }]
+    })
+
     app.$on('playlistDeleteClicked', function(song) {
         player.playlist.splice(player.playlist.indexOf(song), 1)
     })
@@ -356,6 +368,7 @@
     Vue.set(player, 'duration', storage.duration || '')
     Vue.set(player, 'loginPassword', '')
     Vue.set(player, 'loginUsername', storage.loginUsername || '')
+    Vue.set(player, 'menu', {})
     Vue.set(player, 'muted', storage.muted || false)
     Vue.set(player, 'nickname', storage.nickname || '')
     Vue.set(player, 'playlist', storage.playlist || [])

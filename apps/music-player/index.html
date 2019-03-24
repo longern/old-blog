@@ -70,7 +70,8 @@
                 :key="song.id"
                 ripple
                 class="playlist-item"
-                @click="$emit('playlistClicked', song)">
+                @click="$emit('playlistClicked', song)"
+                @contextmenu="$emit('playlistMenu', $event, song)">
                 <v-list-tile-content>
                   <div class="playlist-song-name">
                     {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
@@ -166,6 +167,25 @@
             <v-icon>close</v-icon>
           </v-btn>
         </v-snackbar>
+
+        <v-menu
+          v-if="p.menu"
+          v-model="p.menu.show"
+          :position-x="p.menu.x"
+          :position-y="p.menu.y"
+          absolute
+          offset-y
+        >
+          <v-list dense>
+            <v-list-tile
+              v-for="(item, index) in p.menu.items"
+              :key="index"
+              @click="item.click"
+            >
+              <v-list-tile-title>{{ item.label }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
 
         <audio id="audio" :src="p.src"></audio>
       </v-app>
