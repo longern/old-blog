@@ -91,15 +91,14 @@ export function powerToDb(spec, amin = 1e-10, topDb = 80.0) {
     tf.div(tf.maximum(spec, amin).log(), tf.log(10.))
   )
 
-  if (topDb) {
-    const maxVal = logSpec.max(1, true)
+  if (topDb && topDb >= 0) {
     logSpec = tf.maximum(
       logSpec,
-      tf.sub(maxVal, topDb).tile([1, logSpec.shape[1]])
+      tf.sub(logSpec.max(), topDb)
     )
   }
 
-  return logSpec;
+  return logSpec
 }
 
 export function hzToMel(hz) {
@@ -125,18 +124,18 @@ export function melToHz(mel) {
 }
 
 export function fftFrequencies(sampleRate, nFft) {
-  return tf.linspace(0, sampleRate / 2, Math.floor(1 + nFft / 2));
+  return tf.linspace(0, sampleRate / 2, Math.floor(1 + nFft / 2))
 }
 
 export function melFrequencies(nMels, fMin, fMax) {
-  const melMin = hzToMel(fMin);
-  const melMax = hzToMel(fMax);
+  const melMin = hzToMel(fMin)
+  const melMax = hzToMel(fMax)
 
   // Construct linearly spaced array of nMel intervals, between melMin and
   // melMax.
-  const mels = tf.linspace(melMin, melMax, nMels);
-  const hzs = melToHz(mels);
-  return hzs;
+  const mels = tf.linspace(melMin, melMax, nMels)
+  const hzs = melToHz(mels)
+  return hzs
 }
 
 function magSpectrogram(stftReal, stftImag) {
@@ -191,7 +190,7 @@ export function createMelFilterbank(params) {
     weights = tf.mul(weights, enorm.expandDims(1).tile([1, weights.shape[1]]))
   }
 
-  return weights;
+  return weights
 }
 
 export function melSpectrogram(y, params) {
