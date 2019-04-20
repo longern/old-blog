@@ -53,13 +53,13 @@ function makePrediction(bands) {
     makePrediction.lastBands.dispose()
     makePrediction.lastBands = remainedBuffer
 
-    const lastPrediction = makePrediction.lastPitches.greater(0.5).cast('float32')
     const maskedPrediction = tf.mul(
       prediction,
-      tf.sub(1, tf.pad(
-        lastPrediction,
-        [[0, prediction.shape[0] - 1], [0, 0]]
-      ))
+      tf.pad(
+        makePrediction.lastPitches.lessEqual(0.5).cast('float32'),
+        [[0, prediction.shape[0] - 1], [0, 0]],
+        1
+      )
     )
 
     makePrediction.lastPitches = tf.keep(

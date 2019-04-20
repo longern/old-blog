@@ -138,9 +138,10 @@ export function melFrequencies(nMels, fMin, fMax) {
   return hzs
 }
 
-function magSpectrogram(stftReal, stftImag) {
+function magSpectrogram(y, params) {
+  const { real: stftReal, imag: stftImag } = stft(y, params)
   const spec = tf.add(stftReal.square(), stftImag.square())
-  const nFft = 2 * stftReal.shape[0] - 1
+  const nFft = params.nFft || 2048
   return [spec, nFft]
 }
 
@@ -154,13 +155,11 @@ function outerSubtract(arr, arr2) {
   return tf.sub(tiledArr, tiledArr2)
 }
 
-export function createMelFilterbank(params) {
+export function createMelFilterbank(sampleRate, nFft, params) {
   params = params || {}
-  const sampleRate = params.sampleRate || 22050
   const fMin = params.fMin || 0
   const fMax = params.fMax || sampleRate / 2
   const nMels = params.nMels || 128
-  const nFft = params.nFft || 2048
   const norm = params.norm || 1
 
   // Center freqs of each FFT band.
@@ -195,10 +194,9 @@ export function createMelFilterbank(params) {
 
 export function melSpectrogram(y, params) {
   params = params || {}
-  const { real: stftReal, imag: stftImag } = stft(y, params)
-  const [spec, nFft] = magSpectrogram(stftReal, stftImag)
+  params.sampleRate = params.sampleRate || 22050
+  const [spec, nFft] = magSpectrogram(y, params)
 
-  params.nFft = nFft
-  const melBasis = createMelFilterbank(params)
+  const melBasis = createMelFilterbank(params.sampleRate, nFft, params)
   return tf.dot(melBasis, spec)
 }
