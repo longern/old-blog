@@ -86,16 +86,18 @@ export function stft(y, params) {
 }
 
 export function powerToDb(spec, amin = 1e-10, topDb = 80.0) {
-  var logSpec = tf.mul(10.0, tf.div(tf.maximum(spec, amin).log(), tf.log(10.)))
+  var logSpec = tf.mul(
+    10.0,
+    tf.div(tf.maximum(spec, amin).log(), tf.log(10.))
+  )
 
-  // if (topDb) {
-  //   for (let i = 0; i < width; i++) {
-  //     const maxVal = max(logSpec[i]);
-  //     for (let j = 0; j < height; j++) {
-  //       logSpec[i][j] = Math.max(logSpec[i][j], maxVal - topDb);
-  //     }
-  //   }
-  // }
+  if (topDb) {
+    const maxVal = logSpec.max(1, true)
+    logSpec = tf.maximum(
+      logSpec,
+      tf.sub(maxVal, topDb).tile([1, logSpec.shape[1]])
+    )
+  }
 
   return logSpec;
 }
