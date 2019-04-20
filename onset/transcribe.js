@@ -27,7 +27,7 @@ function makePrediction(bands) {
     makePrediction.lastPitches = tf.zeros([1, 88])
   }
 
-  const pitches = tf.tidy(() => {
+  tf.tidy(() => {
     const bandsTensor = tf.tensor(bands)
     const frames = tf.concat([
       makePrediction.lastBands,
@@ -62,18 +62,17 @@ function makePrediction(bands) {
       )
     )
 
+    makePrediction.lastPitches.dispose()
     makePrediction.lastPitches = tf.keep(
       maskedPrediction.slice(maskedPrediction.shape[0] - 1, 1)
     )
 
-    return maskedPrediction
-  })
-
-  tf.whereAsync(pitches.greater(0.5)).then(async (indices) => {
-    const indicesData = await indices.slice([0, 1]).squeeze().array()
-    makePrediction.busyLock = false
-    if (indicesData.length)
-      console.log(_.uniq(indicesData).sort())
+    tf.whereAsync(maskedPrediction.greater(0.5)).then(async (indices) => {
+      const indicesData = await tf.tidy(() => indices.slice([0, 1]).squeeze()).array()
+      makePrediction.busyLock = false
+      if (indicesData.length)
+        console.log(_.uniq(indicesData).sort())
+    })
   })
 }
 
