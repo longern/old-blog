@@ -100,6 +100,7 @@ processor.onaudioprocess = async function(ev) {
 
   // Resample to 16000 Hz
   const offlineAudioContext = new OfflineAudioContext({
+    numberOfChannels: 1,
     length: 1486,
     sampleRate: 16000
   })
@@ -115,19 +116,23 @@ processor.onaudioprocess = async function(ev) {
   makePrediction(bands)
 }
 
+function loadAudioFile(file) {
+  var reader = new FileReader()
+  reader.onload = function (e) {
+    audioElement.src = e.target.result
+    audioElement.play()
+
+    if (model) {
+      model.resetStates()
+    }
+  }
+  reader.readAsDataURL(file)
+}
+
 document.getElementById('audioFile').addEventListener('change', function(ev) {
   var file = ev.currentTarget.files[0]
 
   if (ev.currentTarget.files && file) {
-    var reader = new FileReader()
-    reader.onload = function (e) {
-      audioElement.src = e.target.result;
-      audioElement.play()
-
-      if (model) {
-        model.resetStates()
-      }
-    }
-    reader.readAsDataURL(file)
+    loadAudioFile(file)
   }
 })
