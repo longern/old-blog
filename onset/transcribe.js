@@ -1,6 +1,17 @@
 var rosa
 var model
 
+if (window.require) {
+  window.fetch = window.fetch.bind(window)
+  window.tf = require('@tensorflow/tfjs-node')
+
+  if (!window.tf) {
+    window.installPackage(['@tensorflow/tfjs-node']).then(location.reload)
+  }
+
+  tf.setBackend('tensorflow')
+}
+
 import('./rosa.js').then((rosaModule) => {
   rosa = rosaModule
 })
