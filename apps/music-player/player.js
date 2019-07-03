@@ -364,7 +364,7 @@
     // Load data from localStorage
     let storage = {}
     try {
-        storage = JSON.parse(localStorage.getItem('MusicPlayerStorage'))
+        storage = JSON.parse(localStorage.getItem('MusicPlayerStorage')) || {}
     } catch(e) { }
 
     Vue.set(player, 'avatarUrl', storage.avatarUrl || '')
