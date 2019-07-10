@@ -34,6 +34,7 @@
   function openFile(filepath) {
     if (filepath) {
       const fs = require('fs')
+      const iconv = require('iconv-lite')
       if (!fs.existsSync(filepath)) {
         if (storage.currentFilePath === filepath) {
           storage.currentFilePath = null
@@ -49,7 +50,8 @@
         storage.recentFiles.length = 10
       }
       const dataBuffer = fs.readFileSync(filepath)
-      editor.doc.setValue(dataBuffer.toString())
+      const detectedEncoding = jschardet.detect(dataBuffer.toString('binary')).encoding
+      editor.doc.setValue(iconv.decode(dataBuffer, detectedEncoding))
     } else {
       editor.doc.setValue('')
     }
@@ -101,7 +103,7 @@
     matchBrackets: true
   })
 
-  editor.setOption("extraKeys", {  
+  editor.setOption("extraKeys", {
     Tab: function(cm) {
       var spaces = Array(cm.getOption("indentUnit") + 1).join(" ")
       cm.replaceSelection(spaces)
