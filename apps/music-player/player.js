@@ -117,8 +117,7 @@
             return
         topLyricWindow.webContents.executeJavaScript(`
             lyricApp.currentSongId = ${player.currentSongId}
-            lyricApp.startTime = ${Date.now() / 1000 - audioElement.currentTime}
-            lyricApp.paused = ${player.paused}
+            lyricApp.currentTime = ${audioElement.currentTime}
         `)
     }
 

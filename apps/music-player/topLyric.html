@@ -45,8 +45,7 @@
           lyricLine0: '',
           lyricLine1: '',
           opacity: 1.,
-          paused: false,
-          startTime: 0,
+          currentTime: 0
         },
         watch: {
           async currentSongId() {
@@ -70,11 +69,7 @@
           return
         }
 
-        if (lyricApp.paused) {
-          return
-        }
-
-        const currentTime = Date.now() / 1000 - lyricApp.startTime
+        const currentTime = this.currentTime
         const currentLine = lyric.select(currentTime)
 
         if (currentLine >= 0)
