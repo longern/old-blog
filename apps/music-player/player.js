@@ -389,7 +389,7 @@
     Vue.nextTick().then(function() {
         Vue.set(player, 'paused', storage.paused !== undefined ? storage.paused : true)
         Vue.set(player, 'currentTime', storage.currentTime || 0)
-        audioElement.currentTime = storage.currentTime
+        audioElement.currentTime = storage.currentTime || 0
     })
 
     if (player.currentSongId) {
