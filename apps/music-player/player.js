@@ -1,6 +1,12 @@
 (async function() {
     const { api } = await import('./request.js')
-    const _ = require('lodash')
+    const _ = await (async () => {
+        let lodashPackage = require('lodash')
+        if (lodashPackage) return lodashPackage
+        await require('h5native').install('lodash')
+        return require('lodash')
+    })()
+
     const audioElement = document.getElementById('audio')
     const player = app.p
 
