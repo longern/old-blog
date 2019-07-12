@@ -70,7 +70,7 @@
                 :key="song.id"
                 ripple
                 class="playlist-item"
-                @click="$emit('playlistClicked', song)"
+                @click="$emit('playlistClicked', playlist, song)"
                 @contextmenu="$emit('playlistMenu', $event, song)">
                 <v-list-tile-content>
                   <div class="playlist-song-name">

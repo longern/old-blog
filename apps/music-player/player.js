@@ -46,7 +46,8 @@
             showSnackbar('Song not found')
             return
         }
-        player.src = urlResponse.data[0].url.replace(/(m\d+?)c/, '$1')
+        player.src = (urlResponse.data[0].url || urlResponse.data[0].src || '')
+            .replace(/(m\d+?)c/, '$1')
         await app.$nextTick()
 
         audioElement.play()
@@ -57,13 +58,6 @@
         currentLyric = await getLyric(id)
         if (currentLyric)
             player.lyric = currentLyric.getLyrics()
-
-        if (!_.some(player.playlist, { id })) {
-            try {
-                const songDetail = (await api.song.detail(id)).songs[0]
-                player.playlist.push(songDetail)
-            } catch (e) { /* Ignore */ }
-        }
     }
 
     async function musicPlayPause() {
@@ -75,29 +69,39 @@
     }
 
     function musicNextTrack() {
-        if (!player.playlist.length)
+        if (player.currentPlaylist === -1 ||
+            player.currentPlaylist >= player.playlists.length ||
+            !player.playlists[player.currentPlaylist].length) {
             return
+        }
 
-        let currentIndex = _.findIndex(player.playlist, {
+        const playlist = player.playlists[player.currentPlaylist]
+
+        let currentIndex = _.findIndex(playlist, {
             id: player.currentSongId
         })
-        if (currentIndex === player.playlist.length - 1)
+        if (currentIndex === playlist.length - 1)
             currentIndex = -1
         // If currentIndex is -1, just play the first song
-        playSong(player.playlist[currentIndex + 1].id)
+        playSong(playlist[currentIndex + 1].id)
     }
 
     function musicPreviousTrack() {
-        if (!player.playlist.length)
+        if (player.currentPlaylist === -1 ||
+            player.currentPlaylist >= player.playlists.length ||
+            !player.playlists[player.currentPlaylist].length) {
             return
+        }
 
-        let currentIndex = _.findIndex(player.playlist, {
+        const playlist = player.playlists[player.currentPlaylist]
+
+        let currentIndex = _.findIndex(playlist, {
             id: player.currentSongId
         })
         if (currentIndex <= 0)
-            currentIndex = player.playlist.length
+            currentIndex = playlist.length
         // If currentIndex is -1, just play the last song
-        playSong(player.playlist[currentIndex - 1].id)
+        playSong(playlist[currentIndex - 1].id)
     }
 
     async function syncCookies() {
@@ -241,7 +245,8 @@
         audioElement.volume = player.volume
     })
 
-    app.$on('playlistClicked', function(song) {
+    app.$on('playlistClicked', function(playlist, song) {
+        player.currentPlaylist = player.playlists.indexOf(playlist)
         playSong(song.id)
     })
 
@@ -367,6 +372,7 @@
     } catch(e) { }
 
     Vue.set(player, 'avatarUrl', storage.avatarUrl || '')
+    Vue.set(player, 'currentPlaylist', storage.currentPlaylist !== undefined ? storage.currentPlaylist : -1)
     Vue.set(player, 'currentSongId', storage.currentSongId || 0)
     Vue.set(player, 'duration', storage.duration || '')
     Vue.set(player, 'loginPassword', '')
@@ -374,7 +380,6 @@
     Vue.set(player, 'menu', {})
     Vue.set(player, 'muted', storage.muted || false)
     Vue.set(player, 'nickname', storage.nickname || '')
-    Vue.set(player, 'playlist', storage.playlist || [])
     Vue.set(player, 'playlists', storage.playlists || [])
     Vue.set(player, 'repeatMode', storage.repeatMode || null)
     Vue.set(player, 'search', storage.search || '')
