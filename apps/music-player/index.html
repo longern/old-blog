@@ -70,10 +70,11 @@
                 :key="song.id"
                 :avatar="p.playlists[p.currentPlaylist] === playlist && song.id === p.currentSongId"
                 ripple
-                class="playlist-item"
+                :class="{'playlist-item': true,
+                         'is-current': p.playlists[p.currentPlaylist] === playlist && song.id === p.currentSongId}"
                 @click="$emit('playlistClicked', playlist, song)"
                 @contextmenu="$emit('playlistMenu', $event, song)">
-                <v-list-tile-avatar v-if="p.playlists[p.currentPlaylist] === playlist && song.id === p.currentSongId">
+                <v-list-tile-avatar>
                   <img :src="song.al.picUrl">
                 </v-list-tile-avatar>
                 <v-list-tile-content>
@@ -216,5 +217,19 @@
       app.$vuetify.theme.primary = "#C20C0C"
     </script>
     <script src="player.js"></script>
+
+    <style>
+    .v-list__tile__avatar {
+      display: none;
+    }
+
+    .is-current .v-list__tile__avatar {
+      display: inherit;
+    }
+
+    .is-current .v-list__tile__content {
+      font-size: 15px;
+    }
+    </style>
   </body>
 </html>
