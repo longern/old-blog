@@ -68,6 +68,7 @@
               <v-list-tile
                 v-for="song in playlist"
                 :key="song.id"
+                :avatar="p.playlists[p.currentPlaylist] === playlist && song.id === p.currentSongId"
                 ripple
                 class="playlist-item"
                 @click="$emit('playlistClicked', playlist, song)"
