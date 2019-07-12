@@ -189,6 +189,7 @@
             const pixels = -(currentLine * 36 + 18)
             document.getElementById('lyric').style.marginTop = `${pixels}px`
         } else {
+            // No lyrics
             document.getElementById('lyric').style.marginTop = '-18px'
         }
         syncWithLyricWindow()
