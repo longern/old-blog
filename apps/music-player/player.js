@@ -193,7 +193,7 @@
             musicNextTrack()
         }
         if (player.repeatMode === 'shuffle') {
-            const candidateSongs = _.reject(player.playlist, {
+            const candidateSongs = _.reject(player.playlists[player.currentPlaylist], {
                 id: player.currentSongId
             })
             playSong(candidateSongs[_.random(candidateSongs.length - 1)].id)
@@ -260,13 +260,19 @@
         player.menu.items = [{
             label: 'Delete',
             click() {
-                player.playlist.splice(player.playlist.indexOf(song), 1)
+                player.playlists[player.currentPlaylist].splice(
+                    player.playlists[player.currentPlaylist].indexOf(song),
+                    1
+                )
             }
         }]
     })
 
     app.$on('playlistDeleteClicked', function(song) {
-        player.playlist.splice(player.playlist.indexOf(song), 1)
+        player.playlists[player.currentPlaylist].splice(
+            player.playlists[player.currentPlaylist].indexOf(song),
+            1
+        )
     })
 
     app.$on('startSearch', async function() {
