@@ -46,14 +46,17 @@
             showSnackbar('Song not found')
             return
         }
+
+        player.currentSongId = id
         player.src = (urlResponse.data[0].url || urlResponse.data[0].src || '')
             .replace(/(m\d+?)c/, '$1')
+        if (!player.src) return
+
         await app.$nextTick()
 
         audioElement.play()
         player.paused = false
 
-        player.currentSongId = id
         player.lyric = null
         currentLyric = await getLyric(id)
         if (currentLyric)

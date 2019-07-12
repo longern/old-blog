@@ -73,6 +73,9 @@
                 class="playlist-item"
                 @click="$emit('playlistClicked', playlist, song)"
                 @contextmenu="$emit('playlistMenu', $event, song)">
+                <v-list-tile-avatar v-if="p.playlists[p.currentPlaylist] === playlist && song.id === p.currentSongId">
+                  <img :src="song.al.picUrl">
+                </v-list-tile-avatar>
                 <v-list-tile-content>
                   <div class="playlist-song-name">
                     {{ song.name }} - {{ song.ar.map(a => a.name).join('、') }}
