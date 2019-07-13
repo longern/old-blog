@@ -195,6 +195,10 @@
         syncWithLyricWindow()
     })
 
+    audioElement.addEventListener('waiting', function() {
+        syncWithLyricWindow()
+    })
+
     audioElement.addEventListener('ended', function() {
         player.paused = true
         if (player.repeatMode === 'list') {
