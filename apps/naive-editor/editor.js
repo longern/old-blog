@@ -87,47 +87,7 @@
     editor.focus()
   }
 
-  $.i18n().load({
-    'zh-CN': 'i18n/zh-CN.json'
-  })
-    .then(function() {
-      storage.i18nMessages = $.i18n().messageStore.messages
-      updateStorage()
-    })
-
-  $.i18n().load(storage.i18nMessages)
-
-  CodeMirror.modeURL = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/%N/%N.js";
-  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-    lineNumbers: true,
-    matchBrackets: true
-  })
-
-  editor.setOption("extraKeys", {
-    Tab: function(cm) {
-      var spaces = Array(cm.getOption("indentUnit") + 1).join(" ")
-      cm.replaceSelection(spaces)
-    }
-  })
-
-  if (window.require) {
-    for (var ext of ['html', 'js', 'md', 'py', 'txt']) {
-      window.registerFileExtension(ext)
-    }
-
-    if (window.argv) {
-      storage.currentFilePath = argv
-    }
-
-    if (storage.currentFilePath) {
-      openFile(storage.currentFilePath)
-    }
-
-    document.body.addEventListener('drop', (ev) => {
-      ev.preventDefault()
-      openFile(ev.dataTransfer.files[0].path)
-    }, true)
-
+  function buildMenu() {
     const menuTemplate = [
       {
         label: $.i18n('&File'),
@@ -241,9 +201,54 @@
       }
     ]
 
-    const customTitlebar = require('custom-electron-titlebar')
-    titlebar = new customTitlebar.Titlebar({
-      menu: buildFromTemplate(menuTemplate)
+    titlebar.updateMenu(buildFromTemplate(menuTemplate))
+  }
+
+  const customTitlebar = require('custom-electron-titlebar')
+  titlebar = new customTitlebar.Titlebar({ menu: buildFromTemplate([]) })
+
+  $.i18n().load({
+    'zh-CN': 'i18n/zh-CN.json'
+  })
+    .then(function() {
+      storage.i18nMessages = $.i18n().messageStore.messages
+      updateStorage()
+      $.i18n().load(storage.i18nMessages)
+      buildMenu()
     })
+
+  $.i18n().load(storage.i18nMessages)
+  buildMenu()
+
+  CodeMirror.modeURL = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.43.0/mode/%N/%N.js";
+  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    lineNumbers: true,
+    matchBrackets: true
+  })
+
+  editor.setOption("extraKeys", {
+    Tab: function(cm) {
+      var spaces = Array(cm.getOption("indentUnit") + 1).join(" ")
+      cm.replaceSelection(spaces)
+    }
+  })
+
+  if (window.require) {
+    for (var ext of ['html', 'js', 'md', 'py', 'txt']) {
+      window.registerFileExtension(ext)
+    }
+
+    if (window.argv) {
+      storage.currentFilePath = argv
+    }
+
+    if (storage.currentFilePath) {
+      openFile(storage.currentFilePath)
+    }
+
+    document.body.addEventListener('drop', (ev) => {
+      ev.preventDefault()
+      openFile(ev.dataTransfer.files[0].path)
+    }, true)
   }
 })()
