@@ -217,6 +217,11 @@
       app.$vuetify.theme.primary = "#C20C0C"
     </script>
     <script src="player.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    </script>
 
     <style>
     .v-list__tile__avatar {
