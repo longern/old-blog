@@ -7,6 +7,6 @@ if (workbox) {
 }
 
 workbox.routing.registerRoute(
-  /.*/,
+  /\.(html|js|css)/,
   new workbox.strategies.StaleWhileRevalidate()
 )
