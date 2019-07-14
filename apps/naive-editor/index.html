@@ -1,5 +1,5 @@
 <!doctype html>
-<html manifest="cache.appcache">
+<html>
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -65,5 +65,10 @@
     </style>
 
     <script src="editor.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    </script>
   </body>
 </html>
