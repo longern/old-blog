@@ -1,4 +1,4 @@
-importScripts('https://g.alicdn.com/kg/workbox/3.3.0/workbox-sw.js')
+importScripts('https://cdn.jsdelivr.net/npm/workbox-sw@4.3.1/build/workbox-sw.min.js')
 
 if (workbox) {
   console.log(`Workbox is loaded`)
