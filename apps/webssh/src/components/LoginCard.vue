@@ -6,7 +6,14 @@
     <v-card-text>
       <v-form>
         <v-text-field v-model="url" label="URL" type="text"></v-text-field>
-        <v-text-field v-model="privateKey" label="Private Key" type="text"></v-text-field>
+        <v-textarea
+          v-model="privateKey"
+          label="Private Key"
+          type="text"
+          append-outer-icon="folder_open"
+          @click:append-outer="$refs.keyFile.click()"
+        ></v-textarea>
+        <input ref="keyFile" type="file" hidden @change="setPrivateKey">
       </v-form>
     </v-card-text>
     <v-card-actions>
@@ -38,6 +45,12 @@ module.exports = {
         privateKey: this.privateKey
       })
     },
+
+    setPrivateKey() {
+      if (this.$refs.keyFile.files.length) {
+        this.privateKey = fs.readFileSync(this.$refs.keyFile.files[0].path)
+      }
+    }
   }
 }
 </script>
