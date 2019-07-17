@@ -35,7 +35,7 @@ module.exports = {
         host: sshUrl.host,
         port: sshUrl.port || 22,
         username: sshUrl.auth,
-        privateKey: privateKey
+        privateKey: this.privateKey
       })
     },
   }

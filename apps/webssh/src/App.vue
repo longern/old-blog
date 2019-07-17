@@ -3,7 +3,7 @@
     <v-content>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
-          <login-card></login-card>
+          <login-card @input="handleLogin"></login-card>
         </v-layout>
       </v-container>
     </v-content>
@@ -14,6 +14,12 @@
 const LoginCard = httpVueLoader('src/components/LoginCard.vue')
 
 module.exports = {
+  methods: {
+    handleLogin(config) {
+      console.log(config)
+    }
+  },
+
   components: {
     LoginCard
   }
