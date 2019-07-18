@@ -1,5 +1,5 @@
 <template>
-  <div class="terminal" contenteditable></div>
+  <div ref="buffer" class="terminal" contenteditable></div>
 </template>
 
 <script>
