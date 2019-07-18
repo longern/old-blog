@@ -59,9 +59,9 @@ module.exports = {
       const conn = new ssh2.Client()
       conn.on('ready', () => {
         this.sshConnection = conn
-        conn.sftp(function(err, sftp) {
+        conn.sftp((err, sftp) => {
           if (err) throw err;
-          sftp.readdir('.', function(err, list) {
+          sftp.readdir('.', (err, list) => {
             if (err) throw err;
             this.fileList = list;
           });

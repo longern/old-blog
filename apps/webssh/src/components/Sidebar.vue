@@ -1,6 +1,22 @@
 <template>
-  <div class="sidebar"></div>
+  <div class="sidebar">
+    <v-list dense>
+      <v-list-tile
+        v-for="file in fileList"
+        :key="file.filename"
+        v-show="!file.filename.match(/^\./)"
+        v-ripple
+      >
+        {{ file.filename }}
+      </v-list-tile>
+    </v-list>
+  </div>
 </template>
 
 <script>
+module.exports = {
+  props: {
+    fileList: Array
+  }
+}
 </script>

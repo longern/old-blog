@@ -20,4 +20,4 @@ new Vue({
   components: {
     'app': httpVueLoader('src/App.vue')
   }
-});
+})
