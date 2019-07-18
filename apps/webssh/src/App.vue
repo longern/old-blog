@@ -6,7 +6,7 @@
       app
       :mobile-break-point="100"
     >
-      <sidebar></sidebar>
+      <sidebar :file-list="fileList"></sidebar>
     </v-navigation-drawer>
     <v-content>
       <v-container fluid fill-height>
@@ -44,6 +44,7 @@ function loadStoredSettings(settings) {
 module.exports = {
   data() {
     return {
+      fileList: [],
       settings: {
         drawer: true,
         config: {}
@@ -56,9 +57,15 @@ module.exports = {
     handleLogin(config) {
       this.settings.config = config
       const conn = new ssh2.Client()
-      conn.on('ready', function() {
+      conn.on('ready', () => {
         this.sshConnection = conn
-        console.log(this.sshConnection)
+        conn.sftp(function(err, sftp) {
+          if (err) throw err;
+          sftp.readdir('.', function(err, list) {
+            if (err) throw err;
+            this.fileList = list;
+          });
+        });
       });
       conn.connect(config)
     }
