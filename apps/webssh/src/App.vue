@@ -4,7 +4,7 @@
       v-model="settings.drawer"
       fixed
       app
-      :mobile-break-point="100"
+      permanent
     >
       <sidebar :file-list="fileList"></sidebar>
     </v-navigation-drawer>
