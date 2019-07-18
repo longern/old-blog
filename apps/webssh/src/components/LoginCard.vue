@@ -35,6 +35,10 @@ module.exports = {
     }
   },
 
+  props: {
+    config: Object
+  },
+
   methods: {
     handleLogin() {
       const sshUrl = url.parse(this.url)
