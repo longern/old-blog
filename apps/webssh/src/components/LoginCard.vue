@@ -30,8 +30,8 @@ const url = window.require('url')
 module.exports = {
   data() {
     return {
-      url: "ssh://",
-      privateKey: "",
+      url: 'ssh://',
+      privateKey: this.config.privateKey || ''
     }
   },
 
@@ -52,7 +52,9 @@ module.exports = {
 
     setPrivateKey() {
       if (this.$refs.keyFile.files.length) {
-        this.privateKey = fs.readFileSync(this.$refs.keyFile.files[0].path)
+        this.privateKey = fs.readFileSync(this.$refs.keyFile.files[0].path, {
+          encoding: 'utf-8'
+        })
       }
     }
   }

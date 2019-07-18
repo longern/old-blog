@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      v-model="drawer"
+      v-model="settings.drawer"
       fixed
       app
       :mobile-break-point="100"
@@ -14,7 +14,7 @@
           <terminal></terminal>
         </template>
         <v-layout v-else align-center justify-center>
-          <login-card :config="config" @input="handleLogin"></login-card>
+          <login-card :config="settings.config" @input="handleLogin"></login-card>
         </v-layout>
       </v-container>
     </v-content>
@@ -27,12 +27,27 @@ const Sidebar = httpVueLoader('src/components/Sidebar.vue')
 const Terminal = httpVueLoader('src/components/Terminal.vue')
 const ssh2 = window.require('ssh2')
 
+function loadStoredSettings(settings) {
+  const storageString = localStorage.getItem('WebSSHSettings')
+  if (!storageString) {
+    return
+  }
+
+  const storage = JSON.parse(storageString)
+  for (const key in storage) {
+    if (key in settings) {
+      settings[key] = storage[key]
+    }
+  }
+  console.log(settings)
+}
+
 module.exports = {
   data() {
     return {
       settings: {
         drawer: true,
-        config: null
+        config: {}
       },
       sshConnection: null
     }
@@ -40,12 +55,26 @@ module.exports = {
 
   methods: {
     handleLogin(config) {
-      this.config = config
+      this.settings.config = config
       const conn = new ssh2.Client()
       conn.on('ready', function() {
         this.sshConnection = conn
+        console.log(this.sshConnection)
       });
       conn.connect(config)
+    }
+  },
+
+  mounted() {
+    loadStoredSettings(this.settings)
+  },
+
+  watch: {
+    settings: {
+      handler() {
+        localStorage.setItem('WebSSHSettings', JSON.stringify(this.settings))
+      },
+      deep: true
     }
   },
 
