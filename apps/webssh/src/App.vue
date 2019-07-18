@@ -99,4 +99,17 @@ module.exports = {
 html {
   overflow-y: hidden;
 }
+
+body {
+  display: flex;
+  flex-flow: column;
+}
+
+.titlebar {
+  position: relative;
+}
+
+.container-after-titlebar {
+  position: initial !important;
+}
 </style>
