@@ -9,7 +9,7 @@
       <sidebar :file-list="fileList"></sidebar>
     </v-navigation-drawer>
     <v-content>
-      <v-container fluid fill-height>
+      <v-container fluid fill-height pa-0>
         <template v-if="sshConnection">
           <terminal></terminal>
         </template>
