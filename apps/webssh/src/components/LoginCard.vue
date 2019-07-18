@@ -27,10 +27,19 @@
 const fs = window.require('fs')
 const url = window.require('url')
 
+function parseConfig(config) {
+  return [
+    'ssh://',
+    config.username.replace(/(.+)/, '$1@'),
+    config.host,
+    config.port.toString().replace(/(.+)/, ':$1')
+  ].join('')
+}
+
 module.exports = {
   data() {
     return {
-      url: 'ssh://',
+      url: parseConfig(this.config),
       privateKey: this.config.privateKey || ''
     }
   },
@@ -43,7 +52,7 @@ module.exports = {
     handleLogin() {
       const sshUrl = url.parse(this.url)
       this.$emit('input', {
-        host: sshUrl.host,
+        host: sshUrl.hostname,
         port: sshUrl.port || 22,
         username: sshUrl.auth,
         privateKey: this.privateKey
