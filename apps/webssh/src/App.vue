@@ -39,7 +39,6 @@ function loadStoredSettings(settings) {
       settings[key] = storage[key]
     }
   }
-  console.log(settings)
 }
 
 module.exports = {
