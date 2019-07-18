@@ -30,9 +30,9 @@ const url = window.require('url')
 function parseConfig(config) {
   return [
     'ssh://',
-    config.username.replace(/(.+)/, '$1@'),
-    config.host,
-    config.port.toString().replace(/(.+)/, ':$1')
+    (config.username || '').replace(/(.+)/, '$1@'),
+    (config.host || ''),
+    (config.port || '').toString().replace(/(.+)/, ':$1')
   ].join('')
 }
 
