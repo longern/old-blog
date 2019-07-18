@@ -60,13 +60,16 @@ module.exports = {
       conn.on('ready', () => {
         this.sshConnection = conn
         conn.sftp((err, sftp) => {
-          if (err) throw err;
+          if (err) throw err
           sftp.readdir('.', (err, list) => {
-            if (err) throw err;
-            this.fileList = list;
-          });
-        });
-      });
+            if (err) throw err
+            this.fileList = list
+          })
+        })
+      })
+      conn.on('banner', (message) => {
+        console.log(message)
+      })
       conn.connect(config)
     }
   },
