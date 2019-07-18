@@ -107,6 +107,7 @@ body {
 
 .titlebar {
   position: relative;
+  font-family: sans-serif;
 }
 
 .container-after-titlebar {
