@@ -31,14 +31,23 @@ function handleAnsi(data) {
   // Handle backspace
   data = data.replace(/\10/, () => {
     const selection = window.getSelection()
-    selection.modify('move', 'backward','character')
+    selection.modify('move', 'backward', 'character')
+    return ''
+  })
+
+  // Handle carriage return
+  data = data.replace(/\15(?!\12)/, () => {
+    const selection = window.getSelection()
+    selection.modify('move', 'backward', 'lineboundary')
+    selection.modify('extend', 'forward', 'lineboundary')
+    selection.deleteFromDocument()
     return ''
   })
 
   // Handle erase line
   data = data.replace(/\33\[K/, () => {
     const selection = window.getSelection()
-    selection.modify('extend', 'forward','line')
+    selection.modify('extend', 'forward', 'lineboundary')
     selection.deleteFromDocument()
     return ''
   })
