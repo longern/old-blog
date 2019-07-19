@@ -97,6 +97,10 @@ module.exports = {
 </script>
 
 <style>
+html, body {
+  height: 100%;
+}
+
 html {
   overflow-y: hidden;
 }
