@@ -18,13 +18,28 @@ function handleAnsi(data) {
   console.log(data)
 
   // Handle set title
-  data = data.replace(/\]0;([^\7]*)\7/, (match, title) => {
+  data = data.replace(/\33\]0;([^\7]*)\7/, (match, title) => {
     document.title = title
     return ''
   })
 
   // Handle beep
   data = data.replace(/\7/, () => {
+    return ''
+  })
+
+  // Handle backspace
+  data = data.replace(/\10/, () => {
+    const selection = window.getSelection()
+    selection.modify('move', 'backward','character')
+    return ''
+  })
+
+  // Handle erase line
+  data = data.replace(/\33\[K/, () => {
+    const selection = window.getSelection()
+    selection.modify('extend', 'forward','line')
+    selection.deleteFromDocument()
     return ''
   })
 
