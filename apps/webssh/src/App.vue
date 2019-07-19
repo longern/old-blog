@@ -8,10 +8,8 @@
     </v-navigation-drawer>
     <v-content>
       <v-container fluid fill-height pa-0>
-        <template v-if="sshConnection">
-          <terminal ref="tty"></terminal>
-        </template>
-        <v-layout v-else align-center justify-center>
+        <terminal ref="tty" v-show="sshConnection"></terminal>
+        <v-layout v-show="!sshConnection" align-center justify-center>
           <login-card :config="settings.config" @input="handleLogin"></login-card>
         </v-layout>
       </v-container>
