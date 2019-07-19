@@ -9,7 +9,7 @@
     <v-content>
       <v-container fluid fill-height pa-0>
         <terminal ref="tty" v-show="sshConnection" :stream="stream"></terminal>
-        <v-layout v-show="!sshConnection" align-center justify-center>
+        <v-layout v-if="!sshConnection" align-center justify-center>
           <login-card :config="settings.config" @input="handleLogin"></login-card>
         </v-layout>
       </v-container>
