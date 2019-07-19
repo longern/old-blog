@@ -6,6 +6,10 @@
 const ansiHtml = window.require('ansi-html')
 
 module.exports = {
+  props: {
+    stream: Object
+  },
+
   methods: {
     write(data) {
       this.$refs.buffer.innerHTML += ansiHtml(data)

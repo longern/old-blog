@@ -8,7 +8,7 @@
     </v-navigation-drawer>
     <v-content>
       <v-container fluid fill-height pa-0>
-        <terminal ref="tty" v-show="sshConnection"></terminal>
+        <terminal ref="tty" v-show="sshConnection" :stream="stream"></terminal>
         <v-layout v-show="!sshConnection" align-center justify-center>
           <login-card :config="settings.config" @input="handleLogin"></login-card>
         </v-layout>
@@ -21,6 +21,8 @@
 const LoginCard = httpVueLoader('src/components/LoginCard.vue')
 const Sidebar = httpVueLoader('src/components/Sidebar.vue')
 const Terminal = httpVueLoader('src/components/Terminal.vue')
+
+const util = window.require('util')
 const ssh2 = window.require('ssh2')
 
 function loadStoredSettings(settings) {
@@ -45,7 +47,8 @@ module.exports = {
         drawer: true,
         config: {}
       },
-      sshConnection: null
+      sshConnection: null,
+      stream: null
     }
   },
 
@@ -54,13 +57,15 @@ module.exports = {
       this.settings.config = config
       const conn = new ssh2.Client()
       this.sshConnection = conn
-      conn.on('ready', () => {
-        conn.sftp((err, sftp) => {
-          if (err) throw err
-          sftp.readdir('.', (err, list) => {
-            if (err) throw err
-            this.fileList = list
-          })
+      conn.on('ready', async () => {
+        const sftp = await util.promisify(conn.sftp.bind(conn))()
+        this.fileList = await util.promisify(sftp.readdir.bind(sftp))('.')
+        this.stream = await util.promisify(conn.shell.bind(conn))({ pty: true })
+        this.stream.on('close', () => {
+          console.log('Stream :: close')
+          conn.end()
+        }).on('data', (data) => {
+          this.$refs.tty.write(data.toString())
         })
       })
       conn.on('banner', (message) => {
