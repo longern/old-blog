@@ -77,6 +77,9 @@ module.exports = {
 
   mounted() {
     loadStoredSettings(this.settings)
+
+    const customTitlebar = window.require('custom-electron-titlebar')
+    new customTitlebar.Titlebar()
   },
 
   watch: {
@@ -111,7 +114,7 @@ body {
 }
 
 .titlebar {
-  position: relative;
+  position: relative !important;
   font-family: sans-serif;
 }
 
