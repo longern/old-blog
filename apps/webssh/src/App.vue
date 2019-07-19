@@ -2,8 +2,6 @@
   <v-app>
     <v-navigation-drawer
       v-model="settings.drawer"
-      fixed
-      app
       permanent
     >
       <sidebar :file-list="fileList"></sidebar>
@@ -112,5 +110,9 @@ body {
 
 .container-after-titlebar {
   position: initial !important;
+}
+
+.application--wrap {
+  flex-flow: row;
 }
 </style>
