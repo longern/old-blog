@@ -3,6 +3,13 @@
 </template>
 
 <script>
+module.exports = {
+  methods: {
+    write(data) {
+      this.$refs.buffer.innerHTML += data
+    }
+  }
+}
 </script>
 
 <style>

@@ -11,7 +11,7 @@
     <v-content>
       <v-container fluid fill-height pa-0>
         <template v-if="sshConnection">
-          <terminal></terminal>
+          <terminal ref="tty"></terminal>
         </template>
         <v-layout v-else align-center justify-center>
           <login-card :config="settings.config" @input="handleLogin"></login-card>
@@ -57,8 +57,8 @@ module.exports = {
     handleLogin(config) {
       this.settings.config = config
       const conn = new ssh2.Client()
+      this.sshConnection = conn
       conn.on('ready', () => {
-        this.sshConnection = conn
         conn.sftp((err, sftp) => {
           if (err) throw err
           sftp.readdir('.', (err, list) => {
@@ -68,7 +68,7 @@ module.exports = {
         })
       })
       conn.on('banner', (message) => {
-        console.log(message)
+        this.$refs.tty.write(message)
       })
       conn.connect(config)
     }
