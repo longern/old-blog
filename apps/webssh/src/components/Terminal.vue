@@ -38,6 +38,7 @@ module.exports = {
 .terminal {
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
 
   outline: none;
   background: black;
