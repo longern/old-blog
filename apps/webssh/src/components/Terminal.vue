@@ -3,10 +3,12 @@
 </template>
 
 <script>
+const ansiHtml = window.require('ansi-html')
+
 module.exports = {
   methods: {
     write(data) {
-      this.$refs.buffer.innerHTML += data
+      this.$refs.buffer.innerHTML += ansiHtml(data)
     }
   }
 }
@@ -23,5 +25,7 @@ module.exports = {
   caret-color: white;
 
   font-family: Consolas, monospace;
+
+  white-space: pre-wrap;
 }
 </style>
