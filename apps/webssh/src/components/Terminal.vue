@@ -5,6 +5,7 @@
     contenteditable
     @keydown="handleKeydown"
     @keypress.prevent="handleKeypress"
+    @contextmenu="handlePaste"
   >
   </div>
 </template>
@@ -42,6 +43,8 @@ module.exports = {
       let eventHandled = false
       if (ev.which >= 8 && ev.which <= 9) {  // Backspace & Tab
         this.stream.write(String.fromCharCode(ev.which))
+      } else if (ev.ctrlKey && ev.which >= 65 && ev.which <= 90) {  // Ctrl-A to Ctrl-Z
+        this.stream.write(String.fromCharCode(ev.which - 64))
       } else {
         eventHandled = true
       }
@@ -57,6 +60,15 @@ module.exports = {
       }
 
       this.stream.write(String.fromCharCode(ev.which))
+    },
+
+    handlePaste(ev) {
+      if (!this.stream) {
+        return
+      }
+
+      const { clipboard } = window.require('electron')
+      this.stream.write(clipboard.readText())
     },
 
     write(data) {
