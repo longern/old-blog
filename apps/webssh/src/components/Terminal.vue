@@ -14,10 +14,16 @@ const ansiHtml = window.require('ansi-to-html')
 const converter = new ansiHtml({ stream: true })
 
 function handleAnsi(data) {
-  // Handle set title
   console.log(data)
+
+  // Handle set title
   data = data.replace(/\]0;([^\7]*)\7/, (match, title) => {
     document.title = title
+    return ''
+  })
+
+  // Handle beep
+  data = data.replace(/\7/, () => {
     return ''
   })
 
@@ -34,8 +40,8 @@ module.exports = {
     handleKeydown(ev) {
       console.log(ev)
       let eventHandled = false
-      if (ev.which === 8) {  // Backspace
-        this.stream.write('\b')
+      if (ev.which >= 8 && ev.which <= 9) {  // Backspace & Tab
+        this.stream.write(String.fromCharCode(ev.which))
       } else {
         eventHandled = true
       }
