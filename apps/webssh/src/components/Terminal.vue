@@ -69,6 +69,14 @@ module.exports = {
         this.stream.write(String.fromCharCode(ev.which))
       } else if (ev.ctrlKey && ev.which >= 65 && ev.which <= 90) {  // Ctrl-A to Ctrl-Z
         this.stream.write(String.fromCharCode(ev.which - 64))
+      } else if (ev.which === 37) {
+        this.stream.write('\33[D')
+      } else if (ev.which === 38) {
+        this.stream.write('\33[A')
+      } else if (ev.which === 39) {
+        this.stream.write('\33[C')
+      } else if (ev.which === 40) {
+        this.stream.write('\33[B')
       } else {
         eventHandled = true
       }
@@ -96,6 +104,7 @@ module.exports = {
     },
 
     write(data) {
+      // Insert data at caret
       this.$refs.buffer.focus()
       const selection = window.getSelection()
       const range = selection.getRangeAt(0)
