@@ -93,6 +93,9 @@ module.exports = {
       const fragment = range.createContextualFragment(handleAnsi(data))
       range.insertNode(fragment)
       range.collapse()
+
+      // Scroll to bottom
+      this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
     }
   }
 }
