@@ -55,7 +55,8 @@ module.exports = {
         host: sshUrl.hostname,
         port: sshUrl.port || 22,
         username: sshUrl.auth,
-        privateKey: this.privateKey
+        privateKey: this.privateKey,
+        keepaliveInterval: 30000
       })
     },
 
