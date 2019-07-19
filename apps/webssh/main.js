@@ -20,7 +20,7 @@
 })()
 
 new Vue({
-  el: '#app',
+  el: '#ssh-app',
   components: {
     'app': httpVueLoader('src/App.vue')
   }
