@@ -1,9 +1,15 @@
 <template>
-  <div ref="buffer" class="terminal" contenteditable></div>
+  <div
+    ref="buffer"
+    class="terminal"
+    contenteditable
+    @keypress.prevent="handleKeypress"
+  >
+  </div>
 </template>
 
 <script>
-const ansiHtml = window.require('ansi-html')
+const ansiHtml = window.require('ansi-to-html')
 
 module.exports = {
   props: {
@@ -11,8 +17,18 @@ module.exports = {
   },
 
   methods: {
+    handleKeypress(ev) {
+      if (!this.stream) {
+        return
+      }
+
+      this.stream.write(String.fromCharCode(ev.which))
+    },
+
     write(data) {
-      this.$refs.buffer.innerHTML += ansiHtml(data)
+      const streamHtml = (new ansiHtml()).toHtml(data)
+      console.log(streamHtml)
+      this.$refs.buffer.insertAdjacentHTML('beforeend', streamHtml)
     }
   }
 }
