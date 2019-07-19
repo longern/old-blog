@@ -10,6 +10,18 @@
 
 <script>
 const ansiHtml = window.require('ansi-to-html')
+const converter = new ansiHtml({ stream: true })
+
+function handleAnsi(data) {
+  // Handle set title
+  data = data.replace(/\]0;([^\7]*)\7/, (match, title) => {
+    document.title = title
+    return ''
+  })
+
+  data = converter.toHtml(data)
+  return data
+}
 
 module.exports = {
   props: {
@@ -26,9 +38,7 @@ module.exports = {
     },
 
     write(data) {
-      const streamHtml = (new ansiHtml()).toHtml(data)
-      console.log(streamHtml)
-      this.$refs.buffer.insertAdjacentHTML('beforeend', streamHtml)
+      this.$refs.buffer.insertAdjacentHTML('beforeend', handleAnsi(data))
     }
   }
 }
