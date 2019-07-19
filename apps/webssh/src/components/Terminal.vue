@@ -3,6 +3,7 @@
     ref="buffer"
     class="terminal"
     contenteditable
+    @keydown="handleKeydown"
     @keypress.prevent="handleKeypress"
   >
   </div>
@@ -14,6 +15,7 @@ const converter = new ansiHtml({ stream: true })
 
 function handleAnsi(data) {
   // Handle set title
+  console.log(data)
   data = data.replace(/\]0;([^\7]*)\7/, (match, title) => {
     document.title = title
     return ''
@@ -29,6 +31,20 @@ module.exports = {
   },
 
   methods: {
+    handleKeydown(ev) {
+      console.log(ev)
+      let eventHandled = false
+      if (ev.which === 8) {  // Backspace
+        this.stream.write('\b')
+      } else {
+        eventHandled = true
+      }
+
+      if (!eventHandled) {
+        ev.preventDefault()
+      }
+    },
+
     handleKeypress(ev) {
       if (!this.stream) {
         return
@@ -38,7 +54,12 @@ module.exports = {
     },
 
     write(data) {
-      this.$refs.buffer.insertAdjacentHTML('beforeend', handleAnsi(data))
+      this.$refs.buffer.focus()
+      const selection = window.getSelection()
+      const range = selection.getRangeAt(0)
+      const fragment = range.createContextualFragment(handleAnsi(data))
+      range.insertNode(fragment)
+      range.collapse()
     }
   }
 }
