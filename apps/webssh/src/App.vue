@@ -2,6 +2,7 @@
   <v-app>
     <v-navigation-drawer
       v-model="settings.drawer"
+      app
       permanent
     >
       <sidebar :file-list="fileList"></sidebar>
@@ -108,21 +109,12 @@ html {
   overflow-y: hidden;
 }
 
-body {
-  display: flex;
-  flex-flow: column;
+.application--wrap, .v-navigation-drawer, .v-content {
+  max-height: calc(100vh - 30px);
+  min-height: calc(100vh - 30px);
 }
 
-.titlebar {
-  position: relative !important;
-  font-family: sans-serif;
-}
-
-.container-after-titlebar {
-  position: initial !important;
-}
-
-.application--wrap {
-  flex-flow: row;
+.v-navigation-drawer {
+  padding-top: 30px !important;
 }
 </style>
