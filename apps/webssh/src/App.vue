@@ -60,7 +60,7 @@ module.exports = {
       conn.on('ready', async () => {
         const sftp = await util.promisify(conn.sftp.bind(conn))()
         this.fileList = await util.promisify(sftp.readdir.bind(sftp))('.')
-        this.stream = await util.promisify(conn.shell.bind(conn))({ pty: true })
+        this.stream = await util.promisify(conn.shell.bind(conn))({ term: 'xterm-256color' })
         this.stream.on('close', () => {
           console.log('Stream :: close')
           conn.end()
