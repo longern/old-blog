@@ -109,6 +109,10 @@ html {
   overflow-y: hidden;
 }
 
+.titlebar {
+  font-family: sans-serif;
+}
+
 .application--wrap, .v-navigation-drawer, .v-content {
   max-height: calc(100vh - 30px);
   min-height: calc(100vh - 30px);
@@ -116,5 +120,9 @@ html {
 
 .v-navigation-drawer {
   padding-top: 30px !important;
+}
+
+.v-content[data-booted=true] {
+  transition: none;
 }
 </style>
