@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" @drop="handleDrop" @dragover.prevent>
     <v-list dense>
       <v-list-tile
         v-for="file in fileList"
@@ -17,6 +17,20 @@
 module.exports = {
   props: {
     fileList: Array
+  },
+
+  methods: {
+    handleDrop(ev) {
+      if (ev.dataTransfer.files.length) {
+        this.$emit('upload', ev.dataTransfer.files)
+      }
+    }
   }
 }
 </script>
+
+<style>
+.sidebar {
+  height: 100%;
+}
+</style>
