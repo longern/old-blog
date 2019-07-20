@@ -28,9 +28,21 @@ function handleEscapeCode(data) {
     return data.substr(match[0].length)
   }
 
-  match = data.match(/^\x1B\[C/)
+  match = data.match(/^\x1B\[(\d*)C/)
   if (match) {
-    selection.modify('move', 'forward', 'character')
+    const amount = Number(match[1]) || 1
+    for (let i = 0; i < amount; i += 1) {
+      selection.modify('move', 'forward', 'character')
+    }
+    return data.substr(match[0].length)
+  }
+
+  match = data.match(/^\x1B\[(\d*)D/)
+  if (match) {
+    const amount = Number(match[1]) || 1
+    for (let i = 0; i < amount; i += 1) {
+      selection.modify('move', 'backward', 'character')
+    }
     return data.substr(match[0].length)
   }
 
@@ -52,6 +64,18 @@ function handleEscapeCode(data) {
   match = data.match(/^\x1B\[(\d+(;\d+)*)?m/)
   if (match) {
     converter.toHtml(match)
+    return data.substr(match[0].length)
+  }
+
+  match = data.match(/^\x1B\[\?25(h|l)/)
+  if (match) {
+    // Show(h) or hide(l) cursor
+    return data.substr(match[0].length)
+  }
+
+  match = data.match(/^\x1B\[\?\d*[a-z]/)
+  if (match) {
+    // Terminal mode
     return data.substr(match[0].length)
   }
 
@@ -99,7 +123,6 @@ function handleAnsi(data) {
         break
 
       case '\x0A':  // Line feed
-        document.createTextNode('\n')
         this.appendChild(document.createTextNode('\n'))
         selection.modify('move', 'forward', 'line')
         break
