@@ -3,7 +3,7 @@
     ref="buffer"
     class="terminal"
     contenteditable
-    @mousedown.prevent
+    @mousedown.prevent="handleMouseDown"
     @keydown="handleKeyDown"
     @keypress.prevent="handleKeyPress"
     @compositionend.prevent="handleCompositionEnd"
@@ -160,6 +160,14 @@ module.exports = {
       }
 
       this.stream.write(String.fromCharCode(ev.which))
+    },
+
+    handleMouseDown(ev) {
+      this.$refs.buffer.focus()
+      setTimeout(() => {
+        const selection = window.getSelection()
+        selection.modify('move', 'forward', 'documentboundary')
+      }, 0);
     },
 
     handlePaste(ev) {
