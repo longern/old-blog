@@ -30,8 +30,7 @@ function handleEscapeCode(data) {
 
   match = data.match(/^\33\[C/)
   if (match) {
-    selection.modify('extend', 'backward', 'character')
-    selection.deleteFromDocument()
+    selection.modify('move', 'forward', 'character')
     return data.substr(match[0].length)
   }
 
@@ -43,7 +42,7 @@ function handleEscapeCode(data) {
     return data.substr(match[0].length)
   }
 
-  match = data.match(/^\33\[P/)
+  match = data.match(/^\33\[\d*P/)
   if (match) {
     selection.modify('extend', 'forward', 'lineboundary')
     selection.deleteFromDocument()
@@ -72,8 +71,14 @@ function handleAnsi(data) {
       remainedData = remainedData.replace(/^[^\0-\x1F]*/, (match) => {
         const range = selection.getRangeAt(0)
         const fragment = range.createContextualFragment(converter.toHtml(match))
+
         range.insertNode(fragment)
+        const fragmentLength = range.toString().length
         range.collapse()
+        for (let i = 0; i < fragmentLength; i += 1) {
+          selection.modify('extend', 'forward', 'character')
+        }
+        selection.deleteFromDocument()
         return ''
       })
     }
