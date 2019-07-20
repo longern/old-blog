@@ -172,6 +172,9 @@ module.exports = {
       setTimeout(() => {
         const selection = window.getSelection()
         selection.modify('move', 'forward', 'documentboundary')
+
+        // Scroll to bottom
+        this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
       }, 0);
     },
 
