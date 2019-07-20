@@ -17,7 +17,7 @@ const ansiHtml = window.require('ansi-to-html')
 const converter = new ansiHtml({ stream: true })
 
 function handleEscapeCode(data) {
-  console.log('ec:' + data)
+  console.log('ec: ', data)
   const selection = window.getSelection()
   let match = null
 
@@ -49,7 +49,7 @@ function handleEscapeCode(data) {
     return data.substr(match[0].length)
   }
 
-  match = data.match(/^\33\[\d+(;\d+)*m/)
+  match = data.match(/^\33\[(\d+(;\d+)*)?m/)
   if (match) {
     converter.toHtml(match)
     return data.substr(match[0].length)
