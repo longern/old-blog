@@ -90,6 +90,8 @@ function handleAnsi(data) {
 
     switch (remainedData[0]) {
       case '\x07':  // Beep
+        const { shell } = window.require('electron')
+        shell.beep()
         break
 
       case '\x08':  // Backspace
