@@ -99,11 +99,9 @@ function handleAnsi(data) {
         break
 
       case '\x0A':  // Line feed
-        selection.modify('move', 'forward', 'lineboundary')
-        const range = selection.getRangeAt(0)
-        const fragment = range.createContextualFragment('\n')
-        range.insertNode(fragment)
-        range.collapse()
+        document.createTextNode('\n')
+        this.appendChild(document.createTextNode('\n'))
+        selection.modify('move', 'forward', 'line')
         break
 
       case '\x0D':  // Carriage return
@@ -196,7 +194,7 @@ module.exports = {
     write(data) {
       // Insert data at caret
       this.$refs.buffer.focus()
-      handleAnsi(data, this.stream)
+      handleAnsi.call(this.$refs.buffer, data, this.stream)
 
       // Scroll to bottom
       this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
