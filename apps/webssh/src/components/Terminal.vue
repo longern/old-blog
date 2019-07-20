@@ -22,40 +22,40 @@ function handleEscapeCode(data) {
   let match = null
 
   // Handle set title
-  match = data.match(/^\33\]0;([^\7]*)\7/)
+  match = data.match(/^\x1B\]0;([^\x07]*)\x07/)
   if (match) {
     document.title = match[1]
     return data.substr(match[0].length)
   }
 
-  match = data.match(/^\33\[C/)
+  match = data.match(/^\x1B\[C/)
   if (match) {
     selection.modify('move', 'forward', 'character')
     return data.substr(match[0].length)
   }
 
   // Handle erase line
-  match = data.match(/^\33\[K/)
+  match = data.match(/^\x1B\[K/)
   if (match) {
     selection.modify('extend', 'forward', 'lineboundary')
     selection.deleteFromDocument()
     return data.substr(match[0].length)
   }
 
-  match = data.match(/^\33\[\d*P/)
+  match = data.match(/^\x1B\[\d*P/)
   if (match) {
     selection.modify('extend', 'forward', 'lineboundary')
     selection.deleteFromDocument()
     return data.substr(match[0].length)
   }
 
-  match = data.match(/^\33\[(\d+(;\d+)*)?m/)
+  match = data.match(/^\x1B\[(\d+(;\d+)*)?m/)
   if (match) {
     converter.toHtml(match)
     return data.substr(match[0].length)
   }
 
-  data = data.replace(/^\33/, '')
+  data = data.replace(/^\x1B/, '')
 
   return data
 }
