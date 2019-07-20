@@ -15,46 +15,99 @@
 const ansiHtml = window.require('ansi-to-html')
 const converter = new ansiHtml({ stream: true })
 
-function handleAnsi(data) {
-  console.log(data)
+function handleEscapeCode(data) {
+  console.log('ec:' + data)
+  const selection = window.getSelection()
+  let match = null
 
   // Handle set title
-  data = data.replace(/\33\]0;([^\7]*)\7/, (match, title) => {
-    document.title = title
-    return ''
-  })
+  match = data.match(/^\33\]0;([^\7]*)\7/)
+  if (match) {
+    document.title = match[1]
+    return data.substr(match[0].length)
+  }
 
-  // Handle beep
-  data = data.replace(/\7/, () => {
-    return ''
-  })
-
-  // Handle backspace
-  data = data.replace(/\10/, () => {
-    const selection = window.getSelection()
-    selection.modify('move', 'backward', 'character')
-    return ''
-  })
-
-  // Handle carriage return
-  data = data.replace(/\15(?!\12)/, () => {
-    const selection = window.getSelection()
-    selection.modify('move', 'backward', 'lineboundary')
-    selection.modify('extend', 'forward', 'lineboundary')
+  match = data.match(/^\33\[C/)
+  if (match) {
+    selection.modify('extend', 'backward', 'character')
     selection.deleteFromDocument()
-    return ''
-  })
+    return data.substr(match[0].length)
+  }
 
   // Handle erase line
-  data = data.replace(/\33\[K/, () => {
-    const selection = window.getSelection()
+  match = data.match(/^\33\[K/)
+  if (match) {
     selection.modify('extend', 'forward', 'lineboundary')
     selection.deleteFromDocument()
-    return ''
-  })
+    return data.substr(match[0].length)
+  }
 
-  data = converter.toHtml(data)
+  match = data.match(/^\33\[P/)
+  if (match) {
+    selection.modify('extend', 'forward', 'lineboundary')
+    selection.deleteFromDocument()
+    return data.substr(match[0].length)
+  }
+
+  match = data.match(/^\33\[\d+(;\d+)*m/)
+  if (match) {
+    converter.toHtml(match)
+    return data.substr(match[0].length)
+  }
+
+  data = data.replace(/^\33/, '')
+
   return data
+}
+
+function handleAnsi(data) {
+  let remainedData = data
+  const selection = window.getSelection()
+
+  while (remainedData) {
+    console.log(remainedData)
+
+    if (remainedData[0].charCodeAt() >= 32) {
+      remainedData = remainedData.replace(/^[^\0-\x1F]*/, (match) => {
+        const range = selection.getRangeAt(0)
+        const fragment = range.createContextualFragment(converter.toHtml(match))
+        range.insertNode(fragment)
+        range.collapse()
+        return ''
+      })
+    }
+
+    if (remainedData[0] === '\x1B') {
+      remainedData = handleEscapeCode(remainedData)
+      continue
+    }
+
+    switch (remainedData[0]) {
+      case '\x07':  // Beep
+        break
+
+      case '\x08':  // Backspace
+        selection.modify('move', 'backward', 'character')
+        break
+
+      case '\x0A':  // Line feed
+        selection.modify('move', 'forward', 'lineboundary')
+        const range = selection.getRangeAt(0)
+        const fragment = range.createContextualFragment('\n')
+        range.insertNode(fragment)
+        range.collapse()
+        break
+
+      case '\x0D':  // Carriage return
+        selection.modify('move', 'backward', 'lineboundary')
+        break
+
+      default:
+        break
+    }
+
+    remainedData = remainedData.substr(1)
+  }
 }
 
 module.exports = {
@@ -120,11 +173,7 @@ module.exports = {
     write(data) {
       // Insert data at caret
       this.$refs.buffer.focus()
-      const selection = window.getSelection()
-      const range = selection.getRangeAt(0)
-      const fragment = range.createContextualFragment(handleAnsi(data))
-      range.insertNode(fragment)
-      range.collapse()
+      handleAnsi(data, this.stream)
 
       // Scroll to bottom
       this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
