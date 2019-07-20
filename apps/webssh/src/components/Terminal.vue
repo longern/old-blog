@@ -3,8 +3,9 @@
     ref="buffer"
     class="terminal"
     contenteditable
-    @keydown="handleKeydown"
-    @keypress.prevent="handleKeypress"
+    @keydown="handleKeyDown"
+    @keypress.prevent="handleKeyPress"
+    @compositionend.prevent="handleCompositionEnd"
     @contextmenu="handlePaste"
   >
   </div>
@@ -62,7 +63,20 @@ module.exports = {
   },
 
   methods: {
-    handleKeydown(ev) {
+    handleCompositionEnd(ev) {
+      if (!this.stream) {
+        return
+      }
+
+      this.stream.write(ev.data)
+      const selection = window.getSelection()
+      for (let i = 0; i < ev.data.length; i += 1) {
+        selection.modify('extend', 'backward', 'character')
+      }
+      selection.deleteFromDocument()
+    },
+
+    handleKeyDown(ev) {
       console.log(ev)
       let eventHandled = false
       if (ev.which >= 8 && ev.which <= 9) {  // Backspace & Tab
@@ -86,7 +100,7 @@ module.exports = {
       }
     },
 
-    handleKeypress(ev) {
+    handleKeyPress(ev) {
       if (!this.stream) {
         return
       }
