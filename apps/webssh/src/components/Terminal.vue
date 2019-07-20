@@ -142,6 +142,10 @@ module.exports = {
         this.stream.write(String.fromCharCode(ev.which))
       } else if (ev.ctrlKey && ev.which >= 65 && ev.which <= 90) {  // Ctrl-A to Ctrl-Z
         this.stream.write(String.fromCharCode(ev.which - 64))
+      } else if (ev.which === 33) {
+        // Page Up
+      } else if (ev.which === 34) {
+        // Page Down
       } else if (ev.which === 37) {
         this.stream.write('\33[D')
       } else if (ev.which === 38) {
