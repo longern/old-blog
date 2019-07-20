@@ -3,6 +3,7 @@
     ref="buffer"
     class="terminal"
     contenteditable
+    @mousedown.prevent
     @keydown="handleKeyDown"
     @keypress.prevent="handleKeyPress"
     @compositionend.prevent="handleCompositionEnd"
