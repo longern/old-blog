@@ -6,9 +6,11 @@
     @mousedown.prevent="handleMouseDown"
     @keydown="handleKeyDown"
     @keypress.prevent="handleKeyPress"
+    @focus="handleFocus"
     @compositionend.prevent="handleCompositionEnd"
     @contextmenu="handlePaste"
   >
+    <div></div>
   </div>
 </template>
 
@@ -103,6 +105,7 @@ function handleAnsi(data) {
           selection.modify('extend', 'forward', 'character')
         }
         selection.deleteFromDocument()
+        this.cursorColumn += fragmentLength
         return ''
       })
     }
@@ -120,15 +123,21 @@ function handleAnsi(data) {
 
       case '\x08':  // Backspace
         selection.modify('move', 'backward', 'character')
+        this.cursorColumn -= 1
         break
 
       case '\x0A':  // Line feed
-        this.appendChild(document.createTextNode('\n'))
-        selection.modify('move', 'forward', 'line')
+        const lineContainer = document.createElement('div')
+        this.$refs.buffer.appendChild(lineContainer)
+        const range = selection.getRangeAt(0)
+        range.setStart(lineContainer, 0)
+        range.setEnd(lineContainer, 0)
+        this.cursorRow += 1
         break
 
       case '\x0D':  // Carriage return
         selection.modify('move', 'backward', 'lineboundary')
+        this.cursorColumn = 0
         break
 
       default:
@@ -139,7 +148,23 @@ function handleAnsi(data) {
   }
 }
 
+function resetCursor() {
+  const selection = window.getSelection()
+  const rowToFocus = this.$refs.buffer.childNodes[this.cursorRow]
+  selection.collapse(rowToFocus, 0)
+  for (let i = 0; i < this.cursorColumn; i += 1) {
+    selection.modify('move', 'forward', 'character')
+  }
+}
+
 module.exports = {
+  data() {
+    return {
+      cursorRow: 0,
+      cursorColumn: 0
+    }
+  },
+
   props: {
     stream: Object
   },
@@ -156,6 +181,15 @@ module.exports = {
         selection.modify('extend', 'backward', 'character')
       }
       selection.deleteFromDocument()
+    },
+
+    handleFocus(ev) {
+      setTimeout(() => {
+        resetCursor.call(this)
+
+        // Scroll to bottom
+        this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
+      }, 0);
     },
 
     handleKeyDown(ev) {
@@ -196,13 +230,6 @@ module.exports = {
 
     handleMouseDown(ev) {
       this.$refs.buffer.focus()
-      setTimeout(() => {
-        const selection = window.getSelection()
-        selection.modify('move', 'forward', 'documentboundary')
-
-        // Scroll to bottom
-        this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
-      }, 0);
     },
 
     handlePaste(ev) {
@@ -216,12 +243,16 @@ module.exports = {
 
     write(data) {
       // Insert data at caret
-      this.$refs.buffer.focus()
-      handleAnsi.call(this.$refs.buffer, data, this.stream)
+      resetCursor.call(this)
+      handleAnsi.call(this, data, this.stream)
 
       // Scroll to bottom
       this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
     }
+  },
+
+  async mounted() {
+    resetCursor.call(this)
   }
 }
 </script>
@@ -240,5 +271,9 @@ module.exports = {
   font-family: Consolas, monospace;
 
   white-space: pre-wrap;
+}
+
+.terminal div::before {
+  content: '\200B';
 }
 </style>
