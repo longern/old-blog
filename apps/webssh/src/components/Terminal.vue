@@ -106,6 +106,7 @@ addEscapeCodeHandler(/\[\?1049h/, function () {
   workingBuffer = this.$refs.buffer.innerHTML
   workingCursorRow = this.cursorRow
   workingCursorColumn = this.cursorColumn
+  this.$refs.buffer.innerHTML = ''
   this.cursorRow = 1
   this.cursorColumn = 1
   resetCursor.call(this)
@@ -120,6 +121,11 @@ addEscapeCodeHandler(/\[\?1049l/, function () {
 
 addEscapeCodeHandler(/\[\?\d*[a-z]/, () => {
   // Terminal mode
+})
+
+// CSI General handler
+addEscapeCodeHandler(/\[[^@A-Za-z]*[@A-Za-z]/, (match) => {
+  console.log(`CSI ${match} Not handled`)
 })
 
 // General handler
