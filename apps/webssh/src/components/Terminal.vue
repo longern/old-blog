@@ -18,102 +18,95 @@
 const ansiHtml = window.require('ansi-to-html')
 const converter = new ansiHtml({ stream: true })
 
+const escapeCodeHandlers = []
+
+function addEscapeCodeHandler(re, handler) {
+  escapeCodeHandlers.push({
+    re: new RegExp('^\\x1B' + re.source),
+    handler
+  })
+}
+
+addEscapeCodeHandler(/\]0;([^\x07]*)\x07/, (match) => {
+  document.title = match[1]
+})
+
+addEscapeCodeHandler(/\[(\d*)A/, (match) => {
+  this.cursorRow -= Number(match[1]) || 1
+  resetCursor.call(this)
+})
+
+addEscapeCodeHandler(/\[(\d*)B/, (match) => {
+  this.cursorRow += Number(match[1]) || 1
+  resetCursor.call(this)
+})
+
+addEscapeCodeHandler(/\[(\d*)C/, (match) => {
+  const amount = Number(match[1]) || 1
+  for (let i = 0; i < amount; i += 1) {
+    selection.modify('move', 'forward', 'character')
+  }
+  this.cursorColumn += amount
+})
+
+addEscapeCodeHandler(/\[(\d*)D/, (match) => {
+  const amount = Number(match[1]) || 1
+  for (let i = 0; i < amount; i += 1) {
+    selection.modify('move', 'backward', 'character')
+  }
+  this.cursorColumn -= amount
+})
+
+// Handle erase line
+addEscapeCodeHandler(/\[K/, () => {
+  selection.modify('extend', 'forward', 'lineboundary')
+  selection.deleteFromDocument()
+})
+
+// Handle erase document
+addEscapeCodeHandler(/\[J/, () => {
+  selection.modify('extend', 'forward', 'documentboundary')
+  selection.deleteFromDocument()
+})
+
+addEscapeCodeHandler(/\[\d*P/, () => {
+  selection.modify('extend', 'forward', 'lineboundary')
+  selection.deleteFromDocument()
+})
+
+addEscapeCodeHandler(/\[(\d+(;\d+)*)?m/, (match) => {
+  converter.toHtml(match)
+})
+
+addEscapeCodeHandler(/\[6n/, () => {
+  this.stream.write(`\x1B[${this.cursorRow};${this.cursorColumn}R`)
+})
+
+addEscapeCodeHandler(/\[\?25(h|l)/, () => {
+  // Show(h) or hide(l) cursor
+})
+
+addEscapeCodeHandler(/\[\?\d*[a-z]/, () => {
+  // Terminal mode
+})
+
+// General handler
+addEscapeCodeHandler(/(?:)/, () => {
+  // Unhandled escape code
+})
+
 function handleEscapeCode(data) {
   console.log('ec: ', data)
   const selection = window.getSelection()
   let match = null
 
-  // Handle set title
-  match = data.match(/^\x1B\]0;([^\x07]*)\x07/)
-  if (match) {
-    document.title = match[1]
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[(\d*)A/)
-  if (match) {
-    this.cursorRow -= Number(match[1]) || 1
-    resetCursor.call(this)
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[(\d*)B/)
-  if (match) {
-    this.cursorRow += Number(match[1]) || 1
-    resetCursor.call(this)
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[(\d*)C/)
-  if (match) {
-    const amount = Number(match[1]) || 1
-    for (let i = 0; i < amount; i += 1) {
-      selection.modify('move', 'forward', 'character')
+  for (let i = 0; i < escapeCodeHandlers.length; i += 1) {
+    match = data.match(escapeCodeHandlers[i].re)
+    if (match) {
+      escapeCodeHandlers[i].handler.call(this, match)
+      return data.substr(match[0].length)
     }
-    this.cursorColumn += amount
-    return data.substr(match[0].length)
   }
-
-  match = data.match(/^\x1B\[(\d*)D/)
-  if (match) {
-    const amount = Number(match[1]) || 1
-    for (let i = 0; i < amount; i += 1) {
-      selection.modify('move', 'backward', 'character')
-    }
-    this.cursorColumn -= amount
-    return data.substr(match[0].length)
-  }
-
-  // Handle erase line
-  match = data.match(/^\x1B\[K/)
-  if (match) {
-    selection.modify('extend', 'forward', 'lineboundary')
-    selection.deleteFromDocument()
-    return data.substr(match[0].length)
-  }
-
-  // Handle erase document
-  match = data.match(/^\x1B\[J/)
-  if (match) {
-    selection.modify('extend', 'forward', 'documentboundary')
-    selection.deleteFromDocument()
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[\d*P/)
-  if (match) {
-    selection.modify('extend', 'forward', 'lineboundary')
-    selection.deleteFromDocument()
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[(\d+(;\d+)*)?m/)
-  if (match) {
-    converter.toHtml(match)
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[6n/)
-  if (match) {
-    this.stream.write(`\x1B[${this.cursorRow};${this.cursorColumn}R`)
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[\?25(h|l)/)
-  if (match) {
-    // Show(h) or hide(l) cursor
-    return data.substr(match[0].length)
-  }
-
-  match = data.match(/^\x1B\[\?\d*[a-z]/)
-  if (match) {
-    // Terminal mode
-    return data.substr(match[0].length)
-  }
-
-  data = data.replace(/^\x1B/, '')
-
-  return data
 }
 
 function handleAnsi(data) {
