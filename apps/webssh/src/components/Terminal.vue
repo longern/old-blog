@@ -42,21 +42,15 @@ addEscapeCodeHandler(/\[(\d*)B/, function (match) {
 })
 
 addEscapeCodeHandler(/\[(\d*)C/, function (match) {
-  const selection = window.getSelection()
   const amount = Number(match[1]) || 1
-  for (let i = 0; i < amount; i += 1) {
-    selection.modify('move', 'forward', 'character')
-  }
   this.cursorColumn += amount
+  resetCursor.call(this)
 })
 
 addEscapeCodeHandler(/\[(\d*)D/, function (match) {
-  const selection = window.getSelection()
   const amount = Number(match[1]) || 1
-  for (let i = 0; i < amount; i += 1) {
-    selection.modify('move', 'backward', 'character')
-  }
   this.cursorColumn -= amount
+  resetCursor.call(this)
 })
 
 // Set cursor position
@@ -256,7 +250,6 @@ module.exports = {
     },
 
     handleKeyDown(ev) {
-      console.log(ev)
       let eventHandled = false
       if (ev.which >= 8 && ev.which <= 9) {  // Backspace & Tab
         this.stream.write(String.fromCharCode(ev.which))
