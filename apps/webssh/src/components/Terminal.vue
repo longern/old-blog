@@ -264,13 +264,13 @@ module.exports = {
         this.stream.write('\x1B[F~')
       } else if (ev.which === 36) {  // Home
         this.stream.write('\x1B[H~')
-      } else if (ev.which === 37) {
+      } else if (ev.which === 37) {  // Arrow Left
         this.stream.write('\x1B[D')
-      } else if (ev.which === 38) {
+      } else if (ev.which === 38) {  // Arrow Up
         this.stream.write('\x1B[A')
-      } else if (ev.which === 39) {
+      } else if (ev.which === 39) {  // Arrow Right
         this.stream.write('\x1B[C')
-      } else if (ev.which === 40) {
+      } else if (ev.which === 40) {  // Arrow Down
         this.stream.write('\x1B[B')
       } else {
         eventHandled = true
