@@ -71,6 +71,13 @@ addEscapeCodeHandler(/\[(?:(\d+)(?:;(\d+))?)?H/, function (match) {
   resetCursor.call(this)
 })
 
+// Handle erase document
+addEscapeCodeHandler(/\[J/, () => {
+  const selection = window.getSelection()
+  selection.modify('extend', 'forward', 'documentboundary')
+  selection.deleteFromDocument()
+})
+
 // Handle erase line
 addEscapeCodeHandler(/\[K/, () => {
   const selection = window.getSelection()
@@ -78,11 +85,15 @@ addEscapeCodeHandler(/\[K/, () => {
   selection.deleteFromDocument()
 })
 
-// Handle erase document
-addEscapeCodeHandler(/\[J/, () => {
-  const selection = window.getSelection()
-  selection.modify('extend', 'forward', 'documentboundary')
-  selection.deleteFromDocument()
+// Insert lines
+addEscapeCodeHandler(/\[(\d*)L/, function (match) {
+  const amount = Number(match[1]) || 1
+  for (let i = 0; i < amount; i += 1) {
+    this.$refs.buffer.childNodes[this.cursorRow - 1].insertAdjacentElement(
+      'afterend',
+      document.createElement('div')
+    )
+  }
 })
 
 addEscapeCodeHandler(/\[\d*P/, () => {
