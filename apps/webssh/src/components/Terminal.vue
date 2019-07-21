@@ -27,6 +27,10 @@ function addEscapeCodeHandler(re, handler) {
   })
 }
 
+addEscapeCodeHandler(/\=/, () => {
+  // Alternate keypad mode
+})
+
 addEscapeCodeHandler(/\](\d+);([^\x07]*)\x07/, (match) => {
   document.title = match[1]
 })
