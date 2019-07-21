@@ -32,7 +32,14 @@ addEscapeCodeHandler(/\=/, () => {
 })
 
 addEscapeCodeHandler(/\](\d+);([^\x07]*)\x07/, (match) => {
-  document.title = match[1]
+  switch (Number(match[1])) {
+    case 0:
+      document.title = match[2]
+      break
+
+    default:
+      break
+  }
 })
 
 addEscapeCodeHandler(/\[(\d*)A/, function (match) {
