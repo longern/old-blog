@@ -168,7 +168,7 @@ function handleAnsi(data) {
 
 function resetCursor() {
   const divNodes = this.$refs.buffer.childNodes
-  for (let i = 0; i < this.cursorRow - divNodes.length; i += 1) {
+  for (let i = 0; i <= this.cursorRow - divNodes.length; i += 1) {
     this.$refs.buffer.appendChild(document.createElement('div'))
   }
   const rowToFocus = this.$refs.buffer.childNodes[this.cursorRow]
