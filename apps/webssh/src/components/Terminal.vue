@@ -207,6 +207,11 @@ function resetCursor() {
   }
   const rowToFocus = this.$refs.buffer.childNodes[this.cursorRow - 1]
 
+  if (this.cursorColumn - 1 > rowToFocus.textContent.length) {
+    const spaces = ' '.repeat(this.cursorColumn - rowToFocus.textContent.length - 1)
+    rowToFocus.appendChild(document.createTextNode(spaces))
+  }
+
   const selection = window.getSelection()
   selection.collapse(rowToFocus, 0)
   for (let i = 1; i <= this.cursorColumn; i += 1) {
