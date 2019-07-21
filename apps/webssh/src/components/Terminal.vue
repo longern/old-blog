@@ -60,9 +60,9 @@ addEscapeCodeHandler(/\[(\d*)D/, function (match) {
 })
 
 // Set cursor position
-addEscapeCodeHandler(/\[(\d+);(\d+)H/, function (match) {
-  this.cursorRow = Number(match[1])
-  this.cursorColumn = Number(match[2])
+addEscapeCodeHandler(/\[(?:(\d+)(?:;(\d+))?)?H/, function (match) {
+  this.cursorRow = Number(match[1]) || 1
+  this.cursorColumn = Number(match[2]) || 1
   resetCursor.call(this)
 })
 
