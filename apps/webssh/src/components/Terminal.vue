@@ -267,9 +267,9 @@ module.exports = {
       } else if (ev.which === 34) {  // Page Down
         this.stream.write('\x1B[6~')
       } else if (ev.which === 35) {  // End
-        this.stream.write('\x1B[F~')
+        this.stream.write('\x1B[4~')
       } else if (ev.which === 36) {  // Home
-        this.stream.write('\x1B[H~')
+        this.stream.write('\x1B[1~')
       } else if (ev.which === 37) {  // Arrow Left
         this.stream.write('\x1B[D')
       } else if (ev.which === 38) {  // Arrow Up
@@ -278,6 +278,8 @@ module.exports = {
         this.stream.write('\x1B[C')
       } else if (ev.which === 40) {  // Arrow Down
         this.stream.write('\x1B[B')
+      } else if (ev.which === 46) {  // Delete
+        this.stream.write('\x1B[3~')
       } else {
         eventHandled = true
       }
