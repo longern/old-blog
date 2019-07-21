@@ -353,7 +353,7 @@ module.exports = {
   white-space: pre-wrap;
 }
 
-.terminal div::before {
+.terminal div::after {
   content: '\200B';
 }
 </style>
