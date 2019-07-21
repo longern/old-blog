@@ -59,6 +59,13 @@ addEscapeCodeHandler(/\[(\d*)D/, function (match) {
   this.cursorColumn -= amount
 })
 
+// Set cursor position
+addEscapeCodeHandler(/\[(\d+);(\d+)H/, function (match) {
+  this.cursorRow = Number(match[1])
+  this.cursorColumn = Number(match[2])
+  resetCursor.call(this)
+})
+
 // Handle erase line
 addEscapeCodeHandler(/\[K/, () => {
   const selection = window.getSelection()
