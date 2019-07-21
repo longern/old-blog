@@ -72,6 +72,14 @@ function handleEscapeCode(data) {
     return data.substr(match[0].length)
   }
 
+  // Handle erase document
+  match = data.match(/^\x1B\[J/)
+  if (match) {
+    selection.modify('extend', 'forward', 'documentboundary')
+    selection.deleteFromDocument()
+    return data.substr(match[0].length)
+  }
+
   match = data.match(/^\x1B\[\d*P/)
   if (match) {
     selection.modify('extend', 'forward', 'lineboundary')
