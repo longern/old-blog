@@ -27,7 +27,7 @@ function addEscapeCodeHandler(re, handler) {
   })
 }
 
-addEscapeCodeHandler(/\]0;([^\x07]*)\x07/, (match) => {
+addEscapeCodeHandler(/\](\d+);([^\x07]*)\x07/, (match) => {
   document.title = match[1]
 })
 
