@@ -85,6 +85,12 @@ function handleEscapeCode(data) {
     return data.substr(match[0].length)
   }
 
+  match = data.match(/^\x1B\[6n/)
+  if (match) {
+    this.stream.write(`\x1B[${this.cursorRow};${this.cursorColumn}R`)
+    return data.substr(match[0].length)
+  }
+
   match = data.match(/^\x1B\[\?25(h|l)/)
   if (match) {
     // Show(h) or hide(l) cursor
