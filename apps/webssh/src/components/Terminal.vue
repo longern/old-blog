@@ -30,12 +30,27 @@ function handleEscapeCode(data) {
     return data.substr(match[0].length)
   }
 
+  match = data.match(/^\x1B\[(\d*)A/)
+  if (match) {
+    this.cursorRow -= Number(match[1]) || 1
+    resetCursor.call(this)
+    return data.substr(match[0].length)
+  }
+
+  match = data.match(/^\x1B\[(\d*)B/)
+  if (match) {
+    this.cursorRow += Number(match[1]) || 1
+    resetCursor.call(this)
+    return data.substr(match[0].length)
+  }
+
   match = data.match(/^\x1B\[(\d*)C/)
   if (match) {
     const amount = Number(match[1]) || 1
     for (let i = 0; i < amount; i += 1) {
       selection.modify('move', 'forward', 'character')
     }
+    this.cursorColumn += amount
     return data.substr(match[0].length)
   }
 
@@ -45,6 +60,7 @@ function handleEscapeCode(data) {
     for (let i = 0; i < amount; i += 1) {
       selection.modify('move', 'backward', 'character')
     }
+    this.cursorColumn -= amount
     return data.substr(match[0].length)
   }
 
@@ -111,7 +127,7 @@ function handleAnsi(data) {
     }
 
     if (remainedData[0] === '\x1B') {
-      remainedData = handleEscapeCode(remainedData)
+      remainedData = handleEscapeCode.call(this, remainedData)
       continue
     }
 
@@ -127,12 +143,8 @@ function handleAnsi(data) {
         break
 
       case '\x0A':  // Line feed
-        const lineContainer = document.createElement('div')
-        this.$refs.buffer.appendChild(lineContainer)
-        const range = selection.getRangeAt(0)
-        range.setStart(lineContainer, 0)
-        range.setEnd(lineContainer, 0)
         this.cursorRow += 1
+        resetCursor.call(this)
         break
 
       case '\x0D':  // Carriage return
@@ -149,8 +161,13 @@ function handleAnsi(data) {
 }
 
 function resetCursor() {
-  const selection = window.getSelection()
+  const divNodes = this.$refs.buffer.childNodes
+  for (let i = 0; i < this.cursorRow - divNodes.length; i += 1) {
+    this.$refs.buffer.appendChild(document.createElement('div'))
+  }
   const rowToFocus = this.$refs.buffer.childNodes[this.cursorRow]
+
+  const selection = window.getSelection()
   selection.collapse(rowToFocus, 0)
   for (let i = 0; i < this.cursorColumn; i += 1) {
     selection.modify('move', 'forward', 'character')
