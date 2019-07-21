@@ -103,7 +103,7 @@ let workingCursorRow = 1
 let workingCursorColumn = 1
 
 addEscapeCodeHandler(/\[\?1049h/, function () {
-  this.$refs.buffer.innerHTML = workingBuffer
+  workingBuffer = this.$refs.buffer.innerHTML
   workingCursorRow = this.cursorRow
   workingCursorColumn = this.cursorColumn
   this.cursorRow = 1
@@ -112,8 +112,7 @@ addEscapeCodeHandler(/\[\?1049h/, function () {
 })
 
 addEscapeCodeHandler(/\[\?1049l/, function () {
-  workingBuffer = this.$refs.buffer.innerHTML
-  this.$refs.buffer.innerHTML = '<div></div>'
+  this.$refs.buffer.innerHTML = workingBuffer
   this.cursorRow = workingCursorRow
   this.cursorColumn = workingCursorColumn
   resetCursor.call(this)
