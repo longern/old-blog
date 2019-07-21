@@ -31,17 +31,18 @@ addEscapeCodeHandler(/\]0;([^\x07]*)\x07/, (match) => {
   document.title = match[1]
 })
 
-addEscapeCodeHandler(/\[(\d*)A/, (match) => {
+addEscapeCodeHandler(/\[(\d*)A/, function (match) {
   this.cursorRow -= Number(match[1]) || 1
   resetCursor.call(this)
 })
 
-addEscapeCodeHandler(/\[(\d*)B/, (match) => {
+addEscapeCodeHandler(/\[(\d*)B/, function (match) {
   this.cursorRow += Number(match[1]) || 1
   resetCursor.call(this)
 })
 
-addEscapeCodeHandler(/\[(\d*)C/, (match) => {
+addEscapeCodeHandler(/\[(\d*)C/, function (match) {
+  const selection = window.getSelection()
   const amount = Number(match[1]) || 1
   for (let i = 0; i < amount; i += 1) {
     selection.modify('move', 'forward', 'character')
@@ -49,7 +50,8 @@ addEscapeCodeHandler(/\[(\d*)C/, (match) => {
   this.cursorColumn += amount
 })
 
-addEscapeCodeHandler(/\[(\d*)D/, (match) => {
+addEscapeCodeHandler(/\[(\d*)D/, function (match) {
+  const selection = window.getSelection()
   const amount = Number(match[1]) || 1
   for (let i = 0; i < amount; i += 1) {
     selection.modify('move', 'backward', 'character')
@@ -59,17 +61,20 @@ addEscapeCodeHandler(/\[(\d*)D/, (match) => {
 
 // Handle erase line
 addEscapeCodeHandler(/\[K/, () => {
+  const selection = window.getSelection()
   selection.modify('extend', 'forward', 'lineboundary')
   selection.deleteFromDocument()
 })
 
 // Handle erase document
 addEscapeCodeHandler(/\[J/, () => {
+  const selection = window.getSelection()
   selection.modify('extend', 'forward', 'documentboundary')
   selection.deleteFromDocument()
 })
 
 addEscapeCodeHandler(/\[\d*P/, () => {
+  const selection = window.getSelection()
   selection.modify('extend', 'forward', 'lineboundary')
   selection.deleteFromDocument()
 })
@@ -78,7 +83,7 @@ addEscapeCodeHandler(/\[(\d+(;\d+)*)?m/, (match) => {
   converter.toHtml(match)
 })
 
-addEscapeCodeHandler(/\[6n/, () => {
+addEscapeCodeHandler(/\[6n/, function () {
   this.stream.write(`\x1B[${this.cursorRow};${this.cursorColumn}R`)
 })
 
@@ -97,11 +102,9 @@ addEscapeCodeHandler(/(?:)/, () => {
 
 function handleEscapeCode(data) {
   console.log('ec: ', data)
-  const selection = window.getSelection()
-  let match = null
 
   for (let i = 0; i < escapeCodeHandlers.length; i += 1) {
-    match = data.match(escapeCodeHandlers[i].re)
+    const match = data.match(escapeCodeHandlers[i].re)
     if (match) {
       escapeCodeHandlers[i].handler.call(this, match)
       return data.substr(match[0].length)
