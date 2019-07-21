@@ -99,29 +99,43 @@ addEscapeCodeHandler(/\[6n/, function () {
   this.stream.write(`\x1B[${this.cursorRow};${this.cursorColumn}R`)
 })
 
-addEscapeCodeHandler(/\[\?25(h|l)/, () => {
-  // Show(h) or hide(l) cursor
-})
-
+let applicationCursorKeys = false
 let workingBuffer = ''
 let workingCursorRow = 1
 let workingCursorColumn = 1
 
-addEscapeCodeHandler(/\[\?1049h/, function () {
-  workingBuffer = this.$refs.buffer.innerHTML
-  workingCursorRow = this.cursorRow
-  workingCursorColumn = this.cursorColumn
-  this.$refs.buffer.innerHTML = ''
-  this.cursorRow = 1
-  this.cursorColumn = 1
-  resetCursor.call(this)
-})
+// DEC Private Mode
+addEscapeCodeHandler(/\[\?(\d+)(h|l)/, function (match) {
+  const mode = Number(match[1])
+  const turnOn = match[2] === 'h'
+  switch (mode) {
+    case 1:
+      applicationCursorKeys = turnOn
+      break
 
-addEscapeCodeHandler(/\[\?1049l/, function () {
-  this.$refs.buffer.innerHTML = workingBuffer
-  this.cursorRow = workingCursorRow
-  this.cursorColumn = workingCursorColumn
-  resetCursor.call(this)
+    case 25:
+      // Show(h) or hide(l) cursor
+      break
+
+    case 1049:
+      if (turnOn) {
+        workingBuffer = this.$refs.buffer.innerHTML
+        workingCursorRow = this.cursorRow
+        workingCursorColumn = this.cursorColumn
+        this.$refs.buffer.innerHTML = ''
+        this.cursorRow = 1
+        this.cursorColumn = 1
+        resetCursor.call(this)
+      } else {
+        this.$refs.buffer.innerHTML = workingBuffer
+        this.cursorRow = workingCursorRow
+        this.cursorColumn = workingCursorColumn
+        resetCursor.call(this)
+      }
+      break
+    default:
+      break
+  }
 })
 
 addEscapeCodeHandler(/\[\?\d*[a-z]/, () => {
@@ -292,13 +306,13 @@ module.exports = {
       } else if (ev.which === 36) {  // Home
         this.stream.write('\x1B[1~')
       } else if (ev.which === 37) {  // Arrow Left
-        this.stream.write('\x1B[D')
+        this.stream.write(applicationCursorKeys ? '\x1bOD' : '\x1B[D')
       } else if (ev.which === 38) {  // Arrow Up
-        this.stream.write('\x1B[A')
+        this.stream.write(applicationCursorKeys ? '\x1bOA' : '\x1B[A')
       } else if (ev.which === 39) {  // Arrow Right
-        this.stream.write('\x1B[C')
+        this.stream.write(applicationCursorKeys ? '\x1bOC' : '\x1B[C')
       } else if (ev.which === 40) {  // Arrow Down
-        this.stream.write('\x1B[B')
+        this.stream.write(applicationCursorKeys ? '\x1bOB' : '\x1B[B')
       } else if (ev.which === 46) {  // Delete
         this.stream.write('\x1B[3~')
       } else {
