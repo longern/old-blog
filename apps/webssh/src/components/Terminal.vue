@@ -98,17 +98,38 @@ addEscapeCodeHandler(/\[\?25(h|l)/, () => {
   // Show(h) or hide(l) cursor
 })
 
+let workingBuffer = ''
+let workingCursorRow = 1
+let workingCursorColumn = 1
+
+addEscapeCodeHandler(/\[\?1049h/, function () {
+  this.$refs.buffer.innerHTML = workingBuffer
+  workingCursorRow = this.cursorRow
+  workingCursorColumn = this.cursorColumn
+  this.cursorRow = 1
+  this.cursorColumn = 1
+  resetCursor.call(this)
+})
+
+addEscapeCodeHandler(/\[\?1049l/, function () {
+  workingBuffer = this.$refs.buffer.innerHTML
+  this.$refs.buffer.innerHTML = '<div></div>'
+  this.cursorRow = workingCursorRow
+  this.cursorColumn = workingCursorColumn
+  resetCursor.call(this)
+})
+
 addEscapeCodeHandler(/\[\?\d*[a-z]/, () => {
   // Terminal mode
 })
 
 // General handler
 addEscapeCodeHandler(/(?:)/, () => {
-  // Unhandled escape code
+  console.log('Not handled')
 })
 
 function handleEscapeCode(data) {
-  console.log('ec: ', data)
+  console.log('ec: ', data.slice(0, 30))
 
   for (let i = 0; i < escapeCodeHandlers.length; i += 1) {
     const match = data.match(escapeCodeHandlers[i].re)
@@ -119,17 +140,21 @@ function handleEscapeCode(data) {
   }
 }
 
+function escape(text) {
+  const escapeContainer = document.createElement('span')
+  escapeContainer.innerText = text
+  return escapeContainer.innerHTML
+}
+
 function handleAnsi(data) {
   let remainedData = data
-  const selection = window.getSelection()
+  let selection = window.getSelection()
 
   while (remainedData) {
-    console.log(remainedData)
-
     if (remainedData[0].charCodeAt() >= 32) {
       remainedData = remainedData.replace(/^[^\0-\x1F]*/, (match) => {
         const range = selection.getRangeAt(0)
-        const fragment = range.createContextualFragment(converter.toHtml(match))
+        const fragment = range.createContextualFragment(converter.toHtml(escape(match)))
 
         range.insertNode(fragment)
         const fragmentLength = range.toString().length
@@ -166,7 +191,7 @@ function handleAnsi(data) {
 
       case '\x0D':  // Carriage return
         selection.modify('move', 'backward', 'lineboundary')
-        this.cursorColumn = 0
+        this.cursorColumn = 1
         break
 
       default:
@@ -178,15 +203,14 @@ function handleAnsi(data) {
 }
 
 function resetCursor() {
-  const divNodes = this.$refs.buffer.childNodes
-  for (let i = 0; i <= this.cursorRow - divNodes.length; i += 1) {
+  while (this.cursorRow > this.$refs.buffer.childNodes.length) {
     this.$refs.buffer.appendChild(document.createElement('div'))
   }
-  const rowToFocus = this.$refs.buffer.childNodes[this.cursorRow]
+  const rowToFocus = this.$refs.buffer.childNodes[this.cursorRow - 1]
 
   const selection = window.getSelection()
   selection.collapse(rowToFocus, 0)
-  for (let i = 0; i < this.cursorColumn; i += 1) {
+  for (let i = 1; i <= this.cursorColumn; i += 1) {
     selection.modify('move', 'forward', 'character')
   }
 }
@@ -194,8 +218,8 @@ function resetCursor() {
 module.exports = {
   data() {
     return {
-      cursorRow: 0,
-      cursorColumn: 0
+      cursorRow: 1,
+      cursorColumn: 1
     }
   },
 
@@ -223,7 +247,7 @@ module.exports = {
 
         // Scroll to bottom
         this.$refs.buffer.scrollTop = this.$refs.buffer.scrollHeight
-      }, 0);
+      }, 0)
     },
 
     handleKeyDown(ev) {
