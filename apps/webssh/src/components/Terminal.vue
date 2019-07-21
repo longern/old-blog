@@ -164,9 +164,19 @@ function handleAnsi(data) {
     if (remainedData[0].charCodeAt() >= 32) {
       remainedData = remainedData.replace(/^[^\0-\x1F]*/, (match) => {
         const range = selection.getRangeAt(0)
-        const fragment = document.createElement('span')
-        fragment.style.color = window.getComputedStyle(this.$refs.buffer).getPropertyValue('color')
-        fragment.innerHTML = converter.toHtml(escape(match))
+
+        const currentColor = range.endContainer.nodeName === '#text'
+          ? window.getComputedStyle(range.endContainer.parentElement).getPropertyValue('color')
+          : window.getComputedStyle(range.endContainer).getPropertyValue('color')
+
+        let fragment
+        if ( currentColor === window.getComputedStyle(this.$refs.buffer).getPropertyValue('color')) {
+          fragment = range.createContextualFragment(converter.toHtml(escape(match)))
+        } else {
+          fragment = document.createElement('span')
+          fragment.style.color = window.getComputedStyle(this.$refs.buffer).getPropertyValue('color')
+          fragment.innerHTML = converter.toHtml(escape(match))
+        }
 
         range.insertNode(fragment)
         const fragmentLength = range.toString().length
