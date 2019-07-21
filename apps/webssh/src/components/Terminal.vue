@@ -164,7 +164,9 @@ function handleAnsi(data) {
     if (remainedData[0].charCodeAt() >= 32) {
       remainedData = remainedData.replace(/^[^\0-\x1F]*/, (match) => {
         const range = selection.getRangeAt(0)
-        const fragment = range.createContextualFragment(converter.toHtml(escape(match)))
+        const fragment = document.createElement('span')
+        fragment.style.color = window.getComputedStyle(this.$refs.buffer).getPropertyValue('color')
+        fragment.innerHTML = converter.toHtml(escape(match))
 
         range.insertNode(fragment)
         const fragmentLength = range.toString().length
