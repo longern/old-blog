@@ -256,7 +256,7 @@ module.exports = {
 
     handleKeyDown(ev) {
       let eventHandled = false
-      if (ev.which >= 8 && ev.which <= 9) {  // Backspace & Tab
+      if ([8, 9, 27].includes(ev.which)) {  // Backspace & Tab & Escape
         this.stream.write(String.fromCharCode(ev.which))
       } else if (ev.ctrlKey && ev.which >= 65 && ev.which <= 90) {  // Ctrl-A to Ctrl-Z
         this.stream.write(String.fromCharCode(ev.which - 64))
