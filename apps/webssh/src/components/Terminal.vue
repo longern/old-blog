@@ -256,18 +256,22 @@ module.exports = {
         this.stream.write(String.fromCharCode(ev.which))
       } else if (ev.ctrlKey && ev.which >= 65 && ev.which <= 90) {  // Ctrl-A to Ctrl-Z
         this.stream.write(String.fromCharCode(ev.which - 64))
-      } else if (ev.which === 33) {
-        // Page Up
-      } else if (ev.which === 34) {
-        // Page Down
+      } else if (ev.which === 33) {  // Page Up
+        this.stream.write('\x1B[5~')
+      } else if (ev.which === 34) {  // Page Down
+        this.stream.write('\x1B[6~')
+      } else if (ev.which === 35) {  // End
+        this.stream.write('\x1B[F~')
+      } else if (ev.which === 36) {  // Home
+        this.stream.write('\x1B[H~')
       } else if (ev.which === 37) {
-        this.stream.write('\33[D')
+        this.stream.write('\x1B[D')
       } else if (ev.which === 38) {
-        this.stream.write('\33[A')
+        this.stream.write('\x1B[A')
       } else if (ev.which === 39) {
-        this.stream.write('\33[C')
+        this.stream.write('\x1B[C')
       } else if (ev.which === 40) {
-        this.stream.write('\33[B')
+        this.stream.write('\x1B[B')
       } else {
         eventHandled = true
       }
