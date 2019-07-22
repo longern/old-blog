@@ -385,13 +385,16 @@ module.exports = {
 
 <style>
 .terminal {
+  --background-color: black;
+  --foreground-color: whitesmoke;
+
   width: 100%;
   height: 100%;
   overflow-y: scroll;
 
   outline: none;
-  background: black;
-  color: whitesmoke;
+  background: var(--background-color);
+  color: var(--foreground-color);
   caret-color: white;
 
   font-family: Consolas, monospace;
