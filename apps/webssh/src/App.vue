@@ -40,8 +40,9 @@ function appMenuGenerator() {
         {
           type: 'checkbox',
           label: 'Auto Login',
+          checked: component.settings.autoLogin,
           click() {
-            component.settings.autoLogin = true
+            component.settings.autoLogin = !component.settings.autoLogin
           }
         },
         {
