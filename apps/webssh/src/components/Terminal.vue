@@ -52,6 +52,12 @@ addEscapeCodeHandler(/\[(\d*)B/, function (match) {
   resetCursor.call(this)
 })
 
+addEscapeCodeHandler(/\[C(\x1B\[C)+/, function (match) {
+  const amount = Math.ceil(match[0].length / 3)
+  this.cursorColumn += amount
+  resetCursor.call(this)
+})
+
 addEscapeCodeHandler(/\[(\d*)C/, function (match) {
   const amount = Number(match[1]) || 1
   this.cursorColumn += amount
