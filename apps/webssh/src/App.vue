@@ -112,6 +112,10 @@ module.exports = {
     new customTitlebar.Titlebar({
       menu: appMenuGenerator.call(this)
     })
+
+    if (this.settings.autoLogin) {
+      this.handleLogin(this.settings.config)
+    }
   },
 
   watch: {
