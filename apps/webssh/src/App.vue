@@ -110,9 +110,16 @@ module.exports = {
     loadStoredSettings(this.settings)
 
     const customTitlebar = window.require('custom-electron-titlebar')
-    new customTitlebar.Titlebar({
+    const titlebar = new customTitlebar.Titlebar({
       menu: appMenuGenerator.call(this)
     })
+
+    new MutationObserver(function(mutations) {
+      titlebar.updateTitle(mutations[0].target.nodeValue);
+    }).observe(
+        document.querySelector('title'),
+        { childList: true }
+    );
 
     if (this.settings.autoLogin) {
       this.handleLogin(this.settings.config)
