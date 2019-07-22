@@ -11,7 +11,11 @@
       <v-container fluid fill-height pa-0>
         <terminal ref="tty" v-show="sshConnection" :stream="stream"></terminal>
         <v-layout v-if="!sshConnection" align-center justify-center>
-          <login-card :config="settings.config" @input="handleLogin"></login-card>
+          <login-card
+            :config="settings.config"
+            :autoLogin="settings.autoLogin"
+            @input="handleLogin"
+          ></login-card>
         </v-layout>
       </v-container>
     </v-content>
@@ -25,6 +29,29 @@ const Terminal = httpVueLoader('src/components/Terminal.vue')
 
 const util = window.require('util')
 const ssh2 = window.require('ssh2')
+const { remote } = window.require('electron')
+
+function appMenuGenerator() {
+  const component = this
+  return remote.Menu.buildFromTemplate([
+    {
+      label: '&File',
+      submenu: [
+        {
+          type: 'checkbox',
+          label: 'Auto Login',
+          click() {
+            component.settings.autoLogin = true
+          }
+        },
+        {
+          label: '&Exit',
+          click() { remote.getCurrentWindow().close() }
+        }
+      ]
+    }
+  ])
+}
 
 function loadStoredSettings(settings) {
   const storageString = localStorage.getItem('WebSSHSettings')
@@ -45,6 +72,7 @@ module.exports = {
     return {
       fileList: [],
       settings: {
+        autoLogin: false,
         drawer: true,
         config: {}
       },
@@ -80,7 +108,9 @@ module.exports = {
     loadStoredSettings(this.settings)
 
     const customTitlebar = window.require('custom-electron-titlebar')
-    new customTitlebar.Titlebar()
+    new customTitlebar.Titlebar({
+      menu: appMenuGenerator.call(this)
+    })
   },
 
   watch: {
