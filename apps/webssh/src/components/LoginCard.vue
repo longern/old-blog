@@ -45,6 +45,7 @@ module.exports = {
   },
 
   props: {
+    autoLogin: Boolean,
     config: Object
   },
 
