@@ -88,6 +88,7 @@ module.exports = {
       const conn = new ssh2.Client()
       this.sshConnection = conn
       conn.on('ready', async () => {
+        this.$refs.tty.$el.focus()
         const sftp = await util.promisify(conn.sftp.bind(conn))()
         this.fileList = await util.promisify(sftp.readdir.bind(sftp))('.')
         this.stream = await util.promisify(conn.shell.bind(conn))({ term: 'xterm-256color' })
