@@ -111,6 +111,8 @@ addEscapeCodeHandler(/\[6n/, function () {
 })
 
 let applicationCursorKeys = false
+let windowWidth = 80
+let windowHeight = 24
 let workingBuffer = ''
 let workingCursorRow = 1
 let workingCursorColumn = 1
@@ -211,6 +213,9 @@ function handleAnsi(data) {
         }
         selection.deleteFromDocument()
         this.cursorColumn += fragmentLength
+        if (this.cursorColumn > windowWidth) {
+          this.cursorRow += 1
+        }
         return ''
       })
     }
