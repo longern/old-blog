@@ -19,7 +19,7 @@
 
 <style>
 .terminal {
-  --background-color: black;
+  --background-color: #222;
   --foreground-color: whitesmoke;
 
   width: 100%;
