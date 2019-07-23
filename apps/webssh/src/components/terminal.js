@@ -172,6 +172,43 @@ function escape(text) {
   return escapeContainer.innerHTML
 }
 
+function getContainerOffset(row, column) {
+  while (row > this.$refs.buffer.childNodes.length) {
+    this.$refs.buffer.appendChild(document.createElement('div'))
+  }
+
+  let container = this.$refs.buffer.childNodes[row - 1]
+
+  if (column - 1 > container.textContent.length) {
+    const spaces = ' '.repeat(column - container.textContent.length - 1)
+    container.appendChild(document.createTextNode(spaces))
+  }
+
+  let remainedColumn = column - 1
+  let offset = 0
+
+  while (remainedColumn > 0) {
+    if (container.nodeName === '#text') {
+      offset = remainedColumn
+      break
+    }
+    for (let i = 0; i < container.childNodes.length; i += 1) {
+      if (container.childNodes[i].textContent.length <= remainedColumn) {
+        remainedColumn -= container.childNodes[i].textContent.length
+        offset += 1
+      } else {
+        container = container.childNodes[i]
+        offset = 0
+      }
+    }
+  }
+
+  return {
+    container,
+    offset
+  }
+}
+
 function handleAnsi(data) {
   let remainedData = data
   let selection = window.getSelection()
@@ -196,14 +233,12 @@ function handleAnsi(data) {
           fragment.innerHTML = converter.toHtml(escape(match))
         }
 
+        const { container, offset } = getContainerOffset.call(this, this.cursorRow, this.cursorColumn + match.length)
+        range.setEnd(container, offset)
+        range.deleteContents()
         range.insertNode(fragment)
-        const fragmentLength = range.toString().length
         range.collapse()
-        for (let i = 0; i < fragmentLength; i += 1) {
-          selection.modify('extend', 'forward', 'character')
-        }
-        selection.deleteFromDocument()
-        this.cursorColumn += fragmentLength
+        this.cursorColumn += match.length
         if (this.cursorColumn >= windowWidth) {
           this.cursorRow += 1
           this.cursorColumn = 1
@@ -259,10 +294,8 @@ function resetCursor() {
   }
 
   const selection = window.getSelection()
-  selection.collapse(rowToFocus, 0)
-  for (let i = 1; i < this.cursorColumn; i += 1) {
-    selection.modify('move', 'forward', 'character')
-  }
+  const { container, offset } = getContainerOffset.call(this, this.cursorRow, this.cursorColumn)
+  selection.collapse(container, offset)
 }
 
 module.exports = {
