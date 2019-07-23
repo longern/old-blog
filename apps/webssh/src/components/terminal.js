@@ -199,6 +199,7 @@ function getContainerOffset(row, column) {
       } else {
         container = container.childNodes[i]
         offset = 0
+        break
       }
     }
   }
