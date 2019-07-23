@@ -55,7 +55,7 @@ function appMenuGenerator() {
 }
 
 function loadStoredSettings(settings) {
-  const storageString = localStorage.getItem('WebSSHSettings')
+  const storageString = localStorage.getItem('WebSSHStorage')
   if (!storageString) {
     return
   }
@@ -129,7 +129,7 @@ module.exports = {
   watch: {
     settings: {
       handler() {
-        localStorage.setItem('WebSSHSettings', JSON.stringify(this.settings))
+        localStorage.setItem('WebSSHStorage', JSON.stringify(this.settings))
       },
       deep: true
     }
