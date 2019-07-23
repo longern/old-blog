@@ -1,5 +1,13 @@
 const ansiHtml = window.require('ansi-to-html')
-const converter = new ansiHtml({ stream: true })
+const converter = new ansiHtml({
+  stream: true,
+  colors: {
+    1: '#F22',
+    2: '#2D2',
+    3: '#E81',
+    4: '#07F'
+  }
+})
 
 const escapeCodeHandlers = []
 
