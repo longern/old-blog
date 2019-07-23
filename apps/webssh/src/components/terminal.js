@@ -178,7 +178,9 @@ function handleAnsi(data) {
 
   while (remainedData) {
     if (remainedData[0].charCodeAt() >= 32) {
-      remainedData = remainedData.replace(/^[^\0-\x1F]*/, (match) => {
+      const columnsToRight = windowWidth - this.cursorColumn
+
+      remainedData = remainedData.replace(new RegExp(`^[^\\0-\\x1F]{0,${columnsToRight}}`), (match) => {
         const range = selection.getRangeAt(0)
 
         const currentColor = range.endContainer.nodeName === '#text'
@@ -202,8 +204,10 @@ function handleAnsi(data) {
         }
         selection.deleteFromDocument()
         this.cursorColumn += fragmentLength
-        if (this.cursorColumn > windowWidth) {
+        if (this.cursorColumn >= windowWidth) {
           this.cursorRow += 1
+          this.cursorColumn = 1
+          resetCursor.call(this)
         }
         return ''
       })
