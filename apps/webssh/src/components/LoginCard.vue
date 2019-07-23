@@ -25,6 +25,8 @@
 
 <script>
 const fs = window.require('fs')
+const os = window.require('os')
+const path = window.require('path')
 const url = window.require('url')
 
 function parseConfig(config) {
@@ -66,6 +68,19 @@ module.exports = {
           encoding: 'utf-8'
         })
       }
+    }
+  },
+
+  async mounted() {
+    const h5native = window.require('h5native')
+    const ssh2 = await h5native.requireAsync('ssh2')
+    const sshConfig = await h5native.requireAsync('ssh-config')
+
+    const sshConfigPath = path.join(os.homedir(), '.ssh/config')
+    if (fs.existsSync(sshConfigPath)) {
+      const sshConfigContent = fs.readFileSync(sshConfigPath, { encoding: 'utf-8' })
+      const parsedConfig = sshConfig.parse(sshConfigContent)
+      console.log(parsedConfig)
     }
   }
 }
