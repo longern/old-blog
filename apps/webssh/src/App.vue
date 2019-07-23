@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app dark>
     <v-navigation-drawer
       v-model="settings.drawer"
       app
@@ -111,6 +111,7 @@ module.exports = {
 
     const customTitlebar = window.require('custom-electron-titlebar')
     const titlebar = new customTitlebar.Titlebar({
+      backgroundColor: customTitlebar.Color.WHITE,
       menu: appMenuGenerator.call(this)
     })
 

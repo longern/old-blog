@@ -1,6 +1,6 @@
 <template>
   <v-card class="elevation-12" style="min-width: 400px">
-    <v-toolbar dark color="primary">
+    <v-toolbar color="primary">
       <v-toolbar-title>Login</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
