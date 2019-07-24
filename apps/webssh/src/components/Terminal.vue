@@ -32,6 +32,7 @@
   caret-color: white;
 
   font-family: Consolas, monospace;
+  font-size: 14px;
 
   white-space: pre-wrap;
 }
