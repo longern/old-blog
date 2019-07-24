@@ -1,5 +1,6 @@
 const ansiHtml = window.require('ansi-to-html')
 const converter = new ansiHtml({
+  bg: '#222',
   stream: true,
   colors: {
     1: '#F22',
@@ -24,7 +25,7 @@ addEscapeCodeHandler(/\=/, () => {
 
 addEscapeCodeHandler(/\](\d+);([^\x07]*)\x07/, (match) => {
   switch (Number(match[1])) {
-    case 0:
+    case 0:  // Set document title
       document.title = match[2]
       break
 
