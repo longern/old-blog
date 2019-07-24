@@ -157,7 +157,7 @@ html {
   font-family: sans-serif;
 }
 
-.application--wrap, .v-navigation-drawer, .v-content {
+.v-application--wrap, .v-navigation-drawer, .v-content {
   max-height: calc(100vh - 30px);
   min-height: calc(100vh - 30px);
 }

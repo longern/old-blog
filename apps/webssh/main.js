@@ -8,5 +8,6 @@ new Vue({
   el: '#ssh-app',
   components: {
     'app': httpVueLoader('src/App.vue')
-  }
+  },
+  vuetify: new Vuetify()
 })

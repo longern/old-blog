@@ -1,14 +1,14 @@
 <template>
   <div class="sidebar" @drop="handleDrop" @dragover.prevent>
     <v-list dense>
-      <v-list-tile
+      <v-list-item
         v-for="file in fileList"
         :key="file.filename"
         v-show="!file.filename.match(/^\./)"
         v-ripple
       >
         {{ file.filename }}
-      </v-list-tile>
+      </v-list-item>
     </v-list>
   </div>
 </template>
