@@ -3,7 +3,7 @@ url: ""
 remote_theme: codeasashu/hcz-jekyll-blog
 title: "Longern"
 author: Longern
-logo: https://longern.com/avatar.png
+logo: https://longern.com/static/img/avatar.png
 github: https://github.com/longern
 
 include:
