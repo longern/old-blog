@@ -234,7 +234,7 @@ function handleAnsi(data) {
           : window.getComputedStyle(range.endContainer).getPropertyValue('color')
 
         let fragment
-        if ( currentColor === window.getComputedStyle(this.$refs.buffer).getPropertyValue('color')) {
+        if (currentColor === window.getComputedStyle(this.$refs.buffer).getPropertyValue('color')) {
           fragment = range.createContextualFragment(converter.toHtml(escape(match)))
         } else {
           fragment = document.createElement('span')
