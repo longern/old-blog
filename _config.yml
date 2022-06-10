@@ -1,15 +1,17 @@
 baseurl: ""
-url: ""
+url: "https://longern.com"
 remote_theme: codeasashu/hcz-jekyll-blog
 title: "Longern"
 author: Longern
 logo: https://longern.com/static/img/avatar.png
 github: https://github.com/longern
 
+plugins:
+  - jekyll-sitemap
 include:
   - _nuxt
 
 disqus_shortname: longern
 google_analytics: UA-133314683-1
 
-paginate: 6
+paginate: 10
