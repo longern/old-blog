@@ -1,6 +1,6 @@
 baseurl: ""
 url: "https://longern.com"
-remote_theme: codeasashu/hcz-jekyll-blog
+remote_theme: mmistakes/minimal-mistakes@4.13.0
 title: "Longern"
 author: Longern
 logo: https://longern.com/static/img/avatar.png
